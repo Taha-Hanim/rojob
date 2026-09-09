@@ -1,0 +1,353 @@
+import { formatPrice } from "../lib/format";
+
+export { formatPrice };
+export const CURRENCY = import.meta.env.VITE_CURRENCY || "PLN";
+
+function product({
+  slug,
+  name,
+  namePl,
+  color,
+  colorId,
+  colorHex,
+  category,
+  description,
+  descriptionPl,
+  details,
+  sizes,
+  front,
+  hover,
+  gallery = [],
+  featured = false,
+  stock = 0,
+  status = "preview",
+  sku,
+}) {
+  return {
+    slug,
+    name,
+    namePl,
+    collection: "Cable Cotton",
+    collectionCode: "01 / 2026",
+    color,
+    colorId,
+    colorHex,
+    category,
+    price: null,
+    currency: CURRENCY,
+    fabric: "100% Cotton",
+    description,
+    descriptionPl,
+    details,
+    sizes,
+    images: { front, hover, gallery },
+    featured,
+    stock,
+    status,
+    sku,
+    designedIn: "Warsaw",
+    madeIn: "Bangladesh",
+    release: "2026",
+  };
+}
+
+export const seedProducts = [
+  product({
+    slug: "cable-half-zip-porcelain",
+    name: "Cable Half-Zip",
+    namePl: "Cable Half-Zip",
+    color: "Porcelain",
+    colorId: "porcelain",
+    colorHex: "#F3EFE7",
+    category: "Knitwear",
+    description:
+      "An elevated cable-knit half-zip designed as a permanent wardrobe layer. Defined by a sculpted collar, restrained detailing and the ROJOB 52°N emblem.",
+    descriptionPl:
+      "Podniesiony sweter z połową zamka i splotem w warkocz, zaprojektowany jako stała warstwa garderoby. Charakterystyczny kołnierz, powściągliwe detale i emblemat ROJOB 52°N.",
+    details: [
+      "Custom R zip pull",
+      "52°N chest emblem",
+      "Ribbed cuffs and hem",
+      "Branded neck tape",
+    ],
+    sizes: ["XS", "S", "M", "L", "XL"],
+    front: "/images/half-zip-porcelain.jpg",
+    hover: "/images/detail-knit.jpg",
+    gallery: ["/images/half-zip-porcelain.jpg", "/images/detail-knit.jpg"],
+    featured: true,
+    stock: 0,
+    status: "preview",
+    sku: "ROJ-HZ-POR-001",
+  }),
+  product({
+    slug: "cable-half-zip-midnight",
+    name: "Cable Half-Zip",
+    namePl: "Cable Half-Zip",
+    color: "Midnight",
+    colorId: "midnight",
+    colorHex: "#0D1A2F",
+    category: "Knitwear",
+    description:
+      "An elevated cable-knit half-zip designed as a permanent wardrobe layer. Defined by a sculpted collar, restrained detailing and the ROJOB 52°N emblem.",
+    descriptionPl:
+      "Podniesiony sweter z połową zamka i splotem w warkocz, zaprojektowany jako stała warstwa garderoby. Charakterystyczny kołnierz, powściągliwe detale i emblemat ROJOB 52°N.",
+    details: [
+      "Custom R zip pull",
+      "52°N chest emblem",
+      "Ribbed cuffs and hem",
+      "Branded neck tape",
+    ],
+    sizes: ["XS", "S", "M", "L", "XL"],
+    front: "/images/half-zip-midnight.jpg",
+    hover: "/images/lookbook-street.jpg",
+    gallery: ["/images/half-zip-midnight.jpg", "/images/lookbook-street.jpg"],
+    featured: true,
+    stock: 0,
+    status: "preview",
+    sku: "ROJ-HZ-MID-001",
+  }),
+  product({
+    slug: "cable-vest-porcelain",
+    name: "Cable Vest",
+    namePl: "Cable Vest",
+    color: "Porcelain",
+    colorId: "porcelain",
+    colorHex: "#F3EFE7",
+    category: "Knitwear",
+    description:
+      "A sleeveless cable-knit vest cut for everyday structure. V-neck, embroidered 52°N emblem, and a weight that holds its shape without stiffness.",
+    descriptionPl:
+      "Bezrękawnik ze splotem w warkocz, skrojony na codzienną strukturę. Dekolt w serek, haftowany emblemat 52°N i gramatura, która trzyma formę bez sztywności.",
+    details: [
+      "Classic cable knit",
+      "Premium 52°N embroidery",
+      "Branded neck tape",
+      "V-neck construction",
+    ],
+    sizes: ["XS", "S", "M", "L", "XL"],
+    front: "/images/cable-vest-porcelain.jpg",
+    hover: "/images/hero-editorial.jpg",
+    gallery: ["/images/cable-vest-porcelain.jpg"],
+    featured: true,
+    stock: 0,
+    status: "preview",
+    sku: "ROJ-VST-POR-001",
+  }),
+  product({
+    slug: "cable-vest-midnight",
+    name: "Cable Vest",
+    namePl: "Cable Vest",
+    color: "Midnight",
+    colorId: "midnight",
+    colorHex: "#0D1A2F",
+    category: "Knitwear",
+    description:
+      "A sleeveless cable-knit vest cut for everyday structure. V-neck, embroidered 52°N emblem, and a weight that holds its shape without stiffness.",
+    descriptionPl:
+      "Bezrękawnik ze splotem w warkocz, skrojony na codzienną strukturę. Dekolt w serek, haftowany emblemat 52°N i gramatura, która trzyma formę bez sztywności.",
+    details: [
+      "Classic cable knit",
+      "Premium 52°N embroidery",
+      "Branded neck tape",
+      "V-neck construction",
+    ],
+    sizes: ["XS", "S", "M", "L", "XL"],
+    front: "/images/cable-vest-midnight.jpg",
+    hover: "/images/detail-knit.jpg",
+    gallery: ["/images/cable-vest-midnight.jpg"],
+    featured: true,
+    stock: 0,
+    status: "preview",
+    sku: "ROJ-VST-MID-001",
+  }),
+  product({
+    slug: "stripe-vest-porcelain",
+    name: "Stripe-Trim Vest",
+    namePl: "Stripe-Trim Vest",
+    color: "Porcelain / Midnight trim",
+    colorId: "porcelain",
+    colorHex: "#F3EFE7",
+    category: "Knitwear",
+    description:
+      "Cable vest with contrasting trim at the collar and armholes. Two-tone discipline — Porcelain body with Midnight trim.",
+    descriptionPl:
+      "Kamizelka ze splotem w warkocz z kontrastowym wykończeniem przy dekolcie i ramionach. Dyscyplina dwóch tonów — korpus Porcelain z wykończeniem Midnight.",
+    details: [
+      "Contrast collar and armholes",
+      "52°N embroidery",
+      "V-neck cable construction",
+      "Branded neck tape",
+    ],
+    sizes: ["XS", "S", "M", "L", "XL"],
+    front: "/images/stripe-vest-porcelain.jpg",
+    hover: "/images/hero-editorial.jpg",
+    gallery: ["/images/stripe-vest-porcelain.jpg"],
+    featured: true,
+    stock: 0,
+    status: "preview",
+    sku: "ROJ-SV-POR-001",
+  }),
+  product({
+    slug: "stripe-vest-midnight",
+    name: "Stripe-Trim Vest",
+    namePl: "Stripe-Trim Vest",
+    color: "Midnight / Porcelain trim",
+    colorId: "midnight",
+    colorHex: "#0D1A2F",
+    category: "Knitwear",
+    description:
+      "Cable vest with contrasting trim at the collar and armholes. Two-tone discipline — Midnight body with Porcelain trim.",
+    descriptionPl:
+      "Kamizelka ze splotem w warkocz z kontrastowym wykończeniem przy dekolcie i ramionach. Dyscyplina dwóch tonów — korpus Midnight z wykończeniem Porcelain.",
+    details: [
+      "Contrast collar and armholes",
+      "52°N embroidery",
+      "V-neck cable construction",
+      "Branded neck tape",
+    ],
+    sizes: ["XS", "S", "M", "L", "XL"],
+    front: "/images/stripe-vest-midnight.jpg",
+    hover: "/images/lookbook-street.jpg",
+    gallery: ["/images/stripe-vest-midnight.jpg"],
+    featured: true,
+    stock: 0,
+    status: "preview",
+    sku: "ROJ-SV-MID-001",
+  }),
+  product({
+    slug: "cable-beanie-porcelain",
+    name: "Cable Beanie",
+    namePl: "Cable Beanie",
+    color: "Porcelain",
+    colorId: "porcelain",
+    colorHex: "#F3EFE7",
+    category: "Accessories",
+    description:
+      "Thick-ribbed cable beanie with the 52°N patch at the cuff. One size, meant to be worn hard and washed simply.",
+    descriptionPl:
+      "Gruba czapka ze splotem w warkocz z naszywką 52°N przy mankiecie. Jeden rozmiar — do noszenia na co dzień i prostej pielęgnacji.",
+    details: [
+      "Ribbed cable knit",
+      "52°N patch",
+      "One size",
+      "Branded cuff detail",
+    ],
+    sizes: ["One size"],
+    front: "/images/beanie-porcelain.jpg",
+    hover: "/images/packaging.jpg",
+    gallery: ["/images/beanie-porcelain.jpg"],
+    featured: false,
+    stock: 0,
+    status: "preview",
+    sku: "ROJ-BN-POR-001",
+  }),
+  product({
+    slug: "cable-beanie-midnight",
+    name: "Cable Beanie",
+    namePl: "Cable Beanie",
+    color: "Midnight",
+    colorId: "midnight",
+    colorHex: "#0D1A2F",
+    category: "Accessories",
+    description:
+      "Thick-ribbed cable beanie with the 52°N patch at the cuff. One size, meant to be worn hard and washed simply.",
+    descriptionPl:
+      "Gruba czapka ze splotem w warkocz z naszywką 52°N przy mankiecie. Jeden rozmiar — do noszenia na co dzień i prostej pielęgnacji.",
+    details: [
+      "Ribbed cable knit",
+      "52°N patch",
+      "One size",
+      "Branded cuff detail",
+    ],
+    sizes: ["One size"],
+    front: "/images/beanie-midnight.jpg",
+    hover: "/images/packaging.jpg",
+    gallery: ["/images/beanie-midnight.jpg"],
+    featured: false,
+    stock: 0,
+    status: "preview",
+    sku: "ROJ-BN-MID-001",
+  }),
+];
+
+export const seedPortfolio = [
+  {
+    slug: "editorial-52n",
+    title: "52° North",
+    subtitle: "Warsaw light, cotton structure",
+    image: "/images/hero-editorial.jpg",
+    year: "2026",
+  },
+  {
+    slug: "street-standard",
+    title: "A Higher Standard",
+    subtitle: "Classic knits. Modern life.",
+    image: "/images/lookbook-street.jpg",
+    year: "2026",
+  },
+  {
+    slug: "hand-of-the-knit",
+    title: "The Knit",
+    subtitle: "Cable, cotton, close",
+    image: "/images/detail-knit.jpg",
+    year: "2026",
+  },
+  {
+    slug: "the-box",
+    title: "The Box",
+    subtitle: "Midnight board. Porcelain bag.",
+    image: "/images/packaging.jpg",
+    year: "2026",
+  },
+];
+
+export const seedJournal = [
+  {
+    slug: "52-north",
+    title: "52° North",
+    titlePl: "52° Północ",
+    category: "52°N",
+    excerpt:
+      "Warsaw sits at approximately 52 degrees north. The ROJOB emblem turns that coordinate into an abstract visual signature — two fields, one gap, no flag.",
+    excerptPl:
+      "Warszawa leży na około 52. stopniu szerokości geograficznej północnej. Emblemat ROJOB zamienia tę współrzędną w abstrakcyjny znak — dwa pola, jedna szczelina, bez flagi.",
+    image: "/images/hero-editorial.jpg",
+    date: "2026-01-15",
+    content:
+      "Latitude is rarely a design brief. For ROJOB, 52°N became one — a quiet geographic fact translated into porcelain, crimson and charcoal. The emblem is not patriotic shorthand. It is a coordinate made visible: left field, transparent centre, right field. Warsaw provides the number. ROJOB defines the form.",
+    contentPl:
+      "Szerokość geograficzna rzadko bywa briefem projektowym. Dla ROJOB 52°N stało się nim — cicha geograficzna informacja przetłumaczona na porcelain, crimson i charcoal. Emblemat nie jest patriotycznym skrótem. To współrzędna uczyniona widoczną: lewe pole, przezroczyste centrum, prawe pole. Warszawa daje liczbę. ROJOB definiuje formę.",
+  },
+  {
+    slug: "why-cable-cotton",
+    title: "Why Cable Cotton",
+    titlePl: "Dlaczego Cable Cotton",
+    category: "Material",
+    excerpt:
+      "Cable knit is familiar — which is precisely why it demands restraint. ROJOB's first collection treats the structure as architecture, not ornament.",
+    excerptPl:
+      "Splot w warkocz jest znany — dlatego właśnie wymaga powściągliwości. Pierwsza kolekcja ROJOB traktuje tę strukturę jak architekturę, nie ozdobę.",
+    image: "/images/detail-knit.jpg",
+    date: "2026-02-01",
+    content:
+      "Cable cotton carries memory: grandparent wardrobes, coastal holidays, university libraries. ROJOB strips away nostalgia and keeps the structure — the raised braid, the weight, the way light catches a rib. Porcelain and Midnight are the first two voices. Warsaw Crimson waits at the emblem, not across the body. The collection is small on purpose.",
+    contentPl:
+      "Cable cotton niesie pamięć: garderoby dziadków, nadmorskie wyjazdy, biblioteki uczelni. ROJOB usuwa nostalgię i zostawia strukturę — wypukły splot, gramaturę, sposób, w jaki światło pada na żebro. Porcelain i Midnight to pierwsze dwa głosy. Warsaw Crimson czeka w emblemacie, nie na całym korpusie. Kolekcja jest niewielka celowo.",
+  },
+  {
+    slug: "warsaw-in-winter",
+    title: "Warsaw in Winter",
+    titlePl: "Warszawa zimą",
+    category: "Warsaw",
+    excerpt:
+      "Stone, steel, low sun. Winter in Warsaw is not picturesque — it is precise. The city reads like a mood board for the first collection.",
+    excerptPl:
+      "Kamień, stal, niskie słońce. Zima w Warszawie nie jest malownicza — jest precyzyjna. Miasto czyta się jak moodboard pierwszej kolekcji.",
+    image: "/images/lookbook-street.jpg",
+    date: "2026-02-20",
+    content:
+      "There is a particular quality to Warsaw light in January — flat, honest, unforgiving. It reveals texture: limestone facades, tram rails, wool against skin. ROJOB was conceived in that light. Not as a postcard, but as a working city where contrast is daily life. The knitwear follows suit: Porcelain for rooms and mornings; Midnight for evening and stone.",
+    contentPl:
+      "Jest w warszawskim świetle styczniowym szczególna jakość — płaskie, uczciwe, bezlitosne. Odsłania fakturę: wapienne fasady, szyny tramwajowe, wełnę na skórze. ROJOB powstał w tym świetle. Nie jako pocztówka, lecz jako miasto pracy, w którym kontrast jest codziennością. Dzianina idzie za tym: Porcelain do wnętrz i poranków; Midnight do wieczoru i kamienia.",
+  },
+];

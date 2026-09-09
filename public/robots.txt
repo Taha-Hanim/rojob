@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rojob.eu/sitemap.xml
