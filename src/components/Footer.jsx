@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useLang } from "../context/LangContext";
-import { useSiteMode } from "../context/SiteModeContext";
+import { useCurrency } from "../context/CurrencyContext";
 import Newsletter from "./Newsletter";
 import { LangToggle } from "./MenuOverlay";
 import Logo from "./Logo";
@@ -25,20 +25,14 @@ const social = [
 
 export default function Footer() {
   const { t } = useLang();
-  const { currency } = useSiteMode();
+  const { currency, setCurrency } = useCurrency();
 
   return (
     <footer className="bg-midnight text-porcelain mt-24">
       <div className="max-w-7xl mx-auto px-5 py-16 md:py-20">
         <div className="grid md:grid-cols-12 gap-12 md:gap-8">
           <div className="md:col-span-4">
-            <Logo
-              light
-              showLocation
-              showEmblem
-              size="md"
-              to="/"
-            />
+            <Logo light showLocation showEmblem size="md" to="/" />
             <p className="mt-6 text-sm text-porcelain/65 leading-relaxed max-w-xs">
               {t("footer.tagline")}
             </p>
@@ -79,16 +73,34 @@ export default function Footer() {
           </div>
 
           <div className="md:col-span-2 text-porcelain">
-            <Newsletter compact className="[&_input]:border-porcelain/25 [&_input]:text-porcelain [&_input]:placeholder:text-porcelain/35 [&_button]:text-porcelain/80 [&_button]:hover:text-porcelain" />
+            <Newsletter
+              compact
+              className="[&_input]:border-porcelain/25 [&_input]:text-porcelain [&_input]:placeholder:text-porcelain/35 [&_button]:text-porcelain/80 [&_button]:hover:text-porcelain"
+            />
           </div>
         </div>
 
         <div className="mt-14 pt-8 border-t border-porcelain/10 flex flex-col md:flex-row md:items-center justify-between gap-4 text-[10px] tracking-[0.22em] uppercase text-porcelain/45">
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-5 flex-wrap">
             <LangToggle light />
-            <span>
-              {t("common.currency")}: {currency}
-            </span>
+            <div className="flex items-center gap-2">
+              <span>{t("common.currency")}:</span>
+              <button
+                type="button"
+                onClick={() => setCurrency("PLN")}
+                className={currency === "PLN" ? "text-porcelain" : "text-porcelain/40 hover:text-porcelain/70"}
+              >
+                PLN
+              </button>
+              <span className="text-porcelain/25">/</span>
+              <button
+                type="button"
+                onClick={() => setCurrency("EUR")}
+                className={currency === "EUR" ? "text-porcelain" : "text-porcelain/40 hover:text-porcelain/70"}
+              >
+                EUR
+              </button>
+            </div>
           </div>
           <p>{t("footer.copyright")}</p>
         </div>

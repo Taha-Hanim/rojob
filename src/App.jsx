@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import { CatalogProvider } from "./context/CatalogContext";
+import { CurrencyProvider } from "./context/CurrencyContext";
 import { LangProvider } from "./context/LangContext";
 import { SiteModeProvider } from "./context/SiteModeContext";
 import { UIProvider } from "./context/UIContext";
@@ -78,19 +79,21 @@ export default function App() {
   return (
     <AuthProvider>
       <LangProvider>
-        <SiteModeProvider>
-          <UIProvider>
-            <CartProvider>
-              <WishlistProvider>
-                <CatalogProvider>
-                  <BrowserRouter>
-                    <Shell />
-                  </BrowserRouter>
-                </CatalogProvider>
-              </WishlistProvider>
-            </CartProvider>
-          </UIProvider>
-        </SiteModeProvider>
+        <CurrencyProvider>
+          <SiteModeProvider>
+            <UIProvider>
+              <CartProvider>
+                <WishlistProvider>
+                  <CatalogProvider>
+                    <BrowserRouter>
+                      <Shell />
+                    </BrowserRouter>
+                  </CatalogProvider>
+                </WishlistProvider>
+              </CartProvider>
+            </UIProvider>
+          </SiteModeProvider>
+        </CurrencyProvider>
       </LangProvider>
     </AuthProvider>
   );

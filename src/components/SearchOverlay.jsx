@@ -4,7 +4,6 @@ import { useCatalog } from "../context/CatalogContext";
 import { useLang } from "../context/LangContext";
 import { useSiteMode } from "../context/SiteModeContext";
 import { useUI } from "../context/UIContext";
-import { formatPrice } from "../lib/format";
 
 const journalEntries = [
   { slug: "warsaw-light", titleKey: "journal.categories.warsaw", href: "/journal/warsaw-light" },

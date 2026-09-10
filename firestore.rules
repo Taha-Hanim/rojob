@@ -1,29 +1,47 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+    function isAdmin() {
+      return signedIn() && request.auth.token.email in [
+        'ceo@rojob.eu'
+      ];
+    }
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
     match /products/{id} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isAdmin();
     }
     match /portfolio/{id} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isAdmin();
     }
     match /journal/{id} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isAdmin();
     }
     match /orders/{id} {
       allow create: if true;
-      allow read, update, delete: if request.auth != null;
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.userId == request.auth.uid)
+        || (signedIn() && resource.data.customer.email == request.auth.token.email);
+      allow update, delete: if isAdmin();
     }
     match /newsletter/{id} {
       allow create: if true;
-      allow read, update, delete: if request.auth != null;
+      allow read, update, delete: if isAdmin();
     }
     match /inquiries/{id} {
       allow create: if true;
-      allow read, update, delete: if request.auth != null;
+      allow read, update, delete: if isAdmin();
+    }
+    match /users/{uid} {
+      allow read, write: if isOwner(uid) || isAdmin();
     }
   }
 }

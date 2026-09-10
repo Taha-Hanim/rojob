@@ -33,8 +33,8 @@ const emptyProduct = () => ({
   sizes: ["XS", "S", "M", "L", "XL"],
   images: { front: "", hover: "", gallery: [] },
   featured: false,
-  stock: 0,
-  status: "preview",
+  stock: 25,
+  status: "available",
   sku: "",
   designedIn: "Warsaw",
   madeIn: "Bangladesh",
@@ -42,7 +42,7 @@ const emptyProduct = () => ({
 });
 
 export default function Admin() {
-  const { user, ready, configured, login, logout } = useAuth();
+  const { user, ready, configured, login, logout, isAdmin } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
@@ -128,6 +128,30 @@ export default function Admin() {
     );
   }
 
+  if (!isAdmin) {
+    return (
+      <div className="max-w-lg mx-auto px-5 py-20">
+        <h1 className="font-serif text-4xl">Atelier</h1>
+        <p className="mt-4 text-midnight/70 leading-relaxed">
+          This account does not have atelier access. Sign in with an admin email, or use your
+          customer account on the main site.
+        </p>
+        <div className="mt-8 flex gap-6">
+          <button
+            type="button"
+            onClick={logout}
+            className="text-[11px] tracking-[0.2em] uppercase border-b border-midnight pb-0.5"
+          >
+            Sign out
+          </button>
+          <Link to="/account" className="text-[11px] tracking-[0.2em] uppercase border-b border-midnight/30 pb-0.5">
+            Account
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-6xl mx-auto px-5 py-10 min-h-screen bg-porcelain">
       <div className="flex justify-between items-center">
@@ -180,8 +204,8 @@ export default function Admin() {
             {isCloudinaryConfigured ? "connected" : "add cloud name + unsigned upload preset"}
           </p>
           <p className="text-sm text-midnight/50">
-            Site mode: set <code>VITE_SITE_MODE=commerce</code> when ready to sell. Default is
-            prelaunch.
+            Site mode is <code>VITE_SITE_MODE=commerce</code>. After changing seed prices or images,
+            click Seed database to push them to Firestore.
           </p>
         </div>
       )}

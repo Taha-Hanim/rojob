@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useLang } from "../context/LangContext";
 import { useSiteMode } from "../context/SiteModeContext";
-import { formatPrice } from "../data/seed";
+import { useCurrency } from "../context/CurrencyContext";
 import { imgSrc } from "../lib/cloudinary";
 import Reveal from "../components/Reveal";
 import Seo from "../components/Seo";
@@ -11,6 +11,7 @@ export default function Cart() {
   const { items, setQty, remove, total } = useCart();
   const { t } = useLang();
   const { commerceEnabled } = useSiteMode();
+  const { formatPrice } = useCurrency();
 
   if (!items.length) {
     return (

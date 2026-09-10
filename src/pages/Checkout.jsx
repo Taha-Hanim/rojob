@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import { useCurrency } from "../context/CurrencyContext";
 import { useLang } from "../context/LangContext";
 import { useSiteMode } from "../context/SiteModeContext";
-import { formatPrice, CURRENCY } from "../data/seed";
 import { createOrder } from "../lib/store";
 import { isFirebaseConfigured } from "../lib/firebase";
 import { createCheckoutSession, isStripeConfigured } from "../lib/stripe";
@@ -13,7 +14,9 @@ import Seo from "../components/Seo";
 
 export default function Checkout() {
   const { items, total, clear } = useCart();
-  const { commerceEnabled, currency } = useSiteMode();
+  const { commerceEnabled } = useSiteMode();
+  const { currency, formatPrice, convertFromPln } = useCurrency();
+  const { user, profile, saveProfile } = useAuth();
   const { t } = useLang();
   const nav = useNavigate();
   const [busy, setBusy] = useState(false);
@@ -35,7 +38,40 @@ export default function Checkout() {
     stripeReady &&
     items.every((i) => i.price != null && Number(i.price) > 0);
 
+  useEffect(() => {
+    if (!user && !profile) return;
+    const addr = profile?.addresses?.[0] || {};
+    setForm((prev) => ({
+      ...prev,
+      name: prev.name || profile?.displayName || user?.displayName || "",
+      email: prev.email || user?.email || "",
+      phone: prev.phone || profile?.phone || "",
+      address: prev.address || addr.line1 || "",
+      city: prev.city || addr.city || "",
+      postcode: prev.postcode || addr.postcode || "",
+      country: prev.country || addr.country || "Poland",
+    }));
+  }, [user, profile]);
+
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const persistProfileFromCheckout = async () => {
+    if (!user || !saveProfile) return;
+    await saveProfile({
+      displayName: form.name.trim(),
+      phone: form.phone.trim(),
+      addresses: [
+        {
+          label: "Home",
+          line1: form.address.trim(),
+          city: form.city.trim(),
+          postcode: form.postcode.trim(),
+          country: form.country.trim() || "Poland",
+        },
+      ],
+      cart: [],
+    });
+  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -43,11 +79,19 @@ export default function Checkout() {
     setBusy(true);
     setError("");
     try {
+      const pricedItems = items.map((i) => ({
+        ...i,
+        price: convertFromPln(i.price),
+        pricePln: i.price,
+      }));
+      const displayTotal = convertFromPln(total);
+
       if (canPay) {
+        await persistProfileFromCheckout().catch(() => {});
         const session = await createCheckoutSession({
-          items,
+          items: pricedItems,
           customer: form,
-          currency: currency || CURRENCY || "PLN",
+          currency: currency || "EUR",
         });
         if (session.url) {
           window.location.href = session.url;
@@ -56,15 +100,19 @@ export default function Checkout() {
         throw new Error("Stripe did not return a checkout URL.");
       }
 
-      // Fallback without Stripe: atelier order record only
       await createOrder({
         customer: form,
         items,
         total,
-        currency: currency || CURRENCY,
+        totalDisplay: displayTotal,
+        currency: currency || "EUR",
+        currencyBase: "PLN",
+        userId: user?.uid || null,
         source: isFirebaseConfigured ? "firebase" : "local",
         payment: "manual",
       });
+
+      await persistProfileFromCheckout().catch(() => {});
       clear();
       nav("/order-confirmed");
     } catch (err) {
@@ -170,8 +218,8 @@ export default function Checkout() {
                 </span>
               </div>
               <p className="text-xs text-midnight/50 leading-relaxed">
-                Apple Pay / Google Pay appear automatically in Stripe Checkout when available on the
-                customer’s device. BLIK can be enabled later in the Stripe Dashboard (Poland).
+                Charged in {currency}. Catalogue prices are stored in PLN and converted for your
+                region (~4.3 PLN = 1 EUR).
               </p>
             </div>
 

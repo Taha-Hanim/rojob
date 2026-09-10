@@ -1,15 +1,13 @@
 import { createContext, useContext, useMemo } from "react";
-import { formatMoney } from "../lib/format";
+import { useCurrency } from "./CurrencyContext";
 
 const SiteModeContext = createContext(null);
 
-const mode = import.meta.env.VITE_SITE_MODE || "prelaunch";
-const currency = import.meta.env.VITE_CURRENCY || "PLN";
+const mode = import.meta.env.VITE_SITE_MODE || "commerce";
 
 export function SiteModeProvider({ children }) {
+  const { currency, formatPrice, convertFromPln } = useCurrency();
   const commerceEnabled = mode === "commerce";
-
-  const formatCurrency = (amount) => formatMoney(amount, currency);
 
   const value = useMemo(
     () => ({
@@ -17,14 +15,13 @@ export function SiteModeProvider({ children }) {
       commerceEnabled,
       isCommerce: commerceEnabled,
       currency,
-      formatCurrency,
+      formatCurrency: formatPrice,
+      convertFromPln,
     }),
-    []
+    [commerceEnabled, currency, formatPrice, convertFromPln]
   );
 
-  return (
-    <SiteModeContext.Provider value={value}>{children}</SiteModeContext.Provider>
-  );
+  return <SiteModeContext.Provider value={value}>{children}</SiteModeContext.Provider>;
 }
 
 export function useSiteMode() {

@@ -5,7 +5,7 @@ import { useCart } from "../context/CartContext";
 import { useLang } from "../context/LangContext";
 import { useSiteMode } from "../context/SiteModeContext";
 import { useWishlist } from "../context/WishlistContext";
-import { formatPrice } from "../data/seed";
+import { useCurrency } from "../context/CurrencyContext";
 import { getColorVariants } from "../lib/catalogFilters";
 import { imgSrc } from "../lib/cloudinary";
 import Newsletter from "../components/Newsletter";
@@ -46,6 +46,7 @@ export default function Product() {
   const { add } = useCart();
   const { t, lang } = useLang();
   const { commerceEnabled } = useSiteMode();
+  const { formatPrice } = useCurrency();
   const { toggle, has } = useWishlist();
 
   const product = products.find((p) => p.slug === slug || p.id === slug);
@@ -205,7 +206,7 @@ export default function Product() {
               </button>
             </div>
 
-            <p className="mt-6 text-xl tabular-nums">{formatPrice(product.price, product.currency)}</p>
+            <p className="mt-6 text-xl tabular-nums">{formatPrice(product.price)}</p>
 
             {product.status === "preview" && (
               <p className="mt-2 text-[10px] tracking-[0.22em] uppercase text-midnight/45">
@@ -370,7 +371,7 @@ export default function Product() {
         <div className="flex items-center gap-4">
           <div className="flex-1 min-w-0">
             <p className="font-serif text-lg truncate">{product.name}</p>
-            <p className="text-sm tabular-nums text-midnight/60">{formatPrice(product.price, product.currency)}</p>
+            <p className="text-sm tabular-nums text-midnight/60">{formatPrice(product.price)}</p>
           </div>
           <button
             type="button"

@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import { useLang } from "../context/LangContext";
-import { formatPrice } from "../data/seed";
+import { useCurrency } from "../context/CurrencyContext";
 import { imgSrc } from "../lib/cloudinary";
 
 export default function ProductCard({ product, index = 0 }) {
   const { t } = useLang();
+  const { formatPrice } = useCurrency();
   const front = product.images?.front;
   const hover = product.images?.hover;
   const slug = product.slug || product.id;
@@ -55,7 +56,7 @@ export default function ProductCard({ product, index = 0 }) {
             </p>
           )}
         </div>
-        <p className="text-sm shrink-0 tabular-nums">{formatPrice(product.price, product.currency)}</p>
+        <p className="text-sm shrink-0 tabular-nums">{formatPrice(product.price)}</p>
       </div>
     </Link>
   );

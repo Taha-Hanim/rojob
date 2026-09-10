@@ -21,11 +21,33 @@ function withIds(snapshot) {
   return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
 }
 
+/** Keep local seed commerce fields when Firestore still has preview / empty prices */
+function mergeSeedCommerce(rows) {
+  const bySlug = Object.fromEntries(seedProducts.map((p) => [p.slug, p]));
+  return rows.map((p) => {
+    const seed = bySlug[p.slug || p.id];
+    if (!seed) return p;
+    const needsCommerce =
+      p.price == null || p.status === "preview" || p.status == null;
+    return {
+      ...p,
+      price: needsCommerce && p.price == null ? seed.price : p.price ?? seed.price,
+      status:
+        needsCommerce && (p.status === "preview" || !p.status)
+          ? seed.status
+          : p.status || seed.status,
+      stock: (p.stock == null || p.stock === 0) && seed.stock ? seed.stock : p.stock,
+      // Prefer local catalogue imagery (corrected emblems)
+      images: seed.images,
+    };
+  });
+}
+
 export async function fetchProductsOnce() {
   if (!isFirebaseConfigured) return seedProducts.map((p) => ({ ...p, id: p.slug }));
   const snap = await getDocs(collection(db, "products"));
   if (snap.empty) return seedProducts.map((p) => ({ ...p, id: p.slug }));
-  return withIds(snap);
+  return mergeSeedCommerce(withIds(snap));
 }
 
 export function subscribeProducts(cb) {
@@ -35,7 +57,7 @@ export function subscribeProducts(cb) {
   }
   return onSnapshot(collection(db, "products"), (snap) => {
     if (snap.empty) cb(seedProducts.map((p) => ({ ...p, id: p.slug })));
-    else cb(withIds(snap));
+    else cb(mergeSeedCommerce(withIds(snap)));
   });
 }
 
