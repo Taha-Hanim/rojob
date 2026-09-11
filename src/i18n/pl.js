@@ -268,6 +268,41 @@ export default {
       shoulder: "Zmierz prosto przez plecy od punktu ramienia do punktu ramienia.",
     },
   },
+  wholesale: {
+    label: "Handel",
+    title: "Hurt",
+    seo: "Zapytania hurtowe ROJOB dla zatwierdzonych nabywców biznesowych.",
+    intro:
+      "ROJOB dostarcza wybrane sklepy i partnerów na warunkach handlowych. Ta strona jest wyłącznie dla przedsiębiorców. Konsumenci powinni korzystać ze sklepu i kontaktu na stronie głównej.",
+    applyTitle: "Wniosek o dostęp hurtowy",
+    applyCopy:
+      "Opiszcie Państwo działalność. Zatwierdzenie jest uznaniowe. Złożenie wniosku nie tworzy umowy dostawy.",
+    applyCta: "Złóż wniosek",
+    viewTerms: "Zobacz regulamin hurtowy",
+    closeTerms: "Zamknij",
+    termsTeaser: "Przeczytaj pełne warunki hurtowe przed złożeniem wniosku. Wymagane do dostępu handlowego.",
+    termsLink: "Hurtowe Warunki Handlowe",
+    acceptTermsPrefix: "Potwierdzam, że działam jako przedsiębiorca i akceptuję",
+    fields: {
+      company: "Nazwa firmy",
+      nip: "NIP / VAT",
+      contactName: "Osoba kontaktowa",
+      email: "E-mail służbowy",
+      phone: "Telefon",
+      country: "Kraj",
+      website: "Strona / sklep",
+      message: "O działalności",
+    },
+    submit: "Wyślij wniosek",
+    sending: "Wysyłanie…",
+    successTitle: "Otrzymano",
+    success:
+      "Wniosek otrzymany. Jeśli będziemy mogli kontynuować, skontaktujemy się pod podanymi danymi.",
+    termsTitle: "Hurtowe warunki handlowe",
+    termsEffective: "Obowiązuje od 11 września 2026 · wyłącznie B2B",
+    legalNote:
+      "Warunki maksymalizują ochronę umowną ROJOB w praktyce B2B. Nie wyłączają odpowiedzialności, której prawo bezwzględnie nie pozwala wyłączyć. Przed użyciem w obrocie wymagają przeglądu prawnego i uzupełnienia danych firmy.",
+  },
   legal: {
     nav: "Informacje prawne",
     terms: "Regulamin",

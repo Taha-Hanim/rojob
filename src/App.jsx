@@ -27,6 +27,7 @@ import Contact from "./pages/Contact";
 import SizeGuide from "./pages/SizeGuide";
 import Account from "./pages/Account";
 import Legal from "./pages/Legal";
+import Wholesale from "./pages/Wholesale";
 import Admin from "./admin/Admin";
 
 function Shell() {
@@ -61,6 +62,7 @@ function Shell() {
           <Route path="/payments" element={<Legal type="payments" />} />
           <Route path="/complaints" element={<Legal type="complaints" />} />
           <Route path="/company" element={<Legal type="company" />} />
+          <Route path="/wholesale" element={<Wholesale />} />
           <Route path="/about" element={<About />} />
           <Route path="/admin" element={<Admin />} />
         </Routes>
