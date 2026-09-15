@@ -7,6 +7,7 @@ import { useWishlist } from "../context/WishlistContext";
 import { useCatalog } from "../context/CatalogContext";
 import { useCurrency } from "../context/CurrencyContext";
 import { db, isFirebaseConfigured } from "../lib/firebase";
+import { authErrorMessage } from "../lib/authErrors";
 import Seo from "../components/Seo";
 import Reveal from "../components/Reveal";
 import ProductCard from "../components/ProductCard";
@@ -14,7 +15,7 @@ import ProductCard from "../components/ProductCard";
 const emptyAddress = { label: "Home", line1: "", city: "", postcode: "", country: "Poland" };
 
 export default function Account() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { formatPrice } = useCurrency();
   const {
     user,
@@ -24,6 +25,7 @@ export default function Account() {
     login,
     register,
     logout,
+    resetPassword,
     saveProfile,
   } = useAuth();
   const { ids } = useWishlist();
@@ -35,6 +37,7 @@ export default function Account() {
   const [displayName, setDisplayName] = useState("");
   const [phone, setPhone] = useState("");
   const [authError, setAuthError] = useState("");
+  const [authNotice, setAuthNotice] = useState("");
   const [authLoading, setAuthLoading] = useState(false);
   const [msg, setMsg] = useState("");
   const [orders, setOrders] = useState([]);
@@ -87,6 +90,7 @@ export default function Account() {
     if (!configured) return;
     setAuthLoading(true);
     setAuthError("");
+    setAuthNotice("");
     try {
       if (mode === "login") {
         await login(email.trim(), password);
@@ -99,7 +103,27 @@ export default function Account() {
         });
       }
     } catch (err) {
-      setAuthError(err.message || t("account.authError"));
+      console.error("[auth]", err.code, err.message);
+      setAuthError(authErrorMessage(err, lang));
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleReset = async () => {
+    setAuthError("");
+    setAuthNotice("");
+    if (!email.trim()) {
+      setAuthError(t("account.resetNeedsEmail"));
+      return;
+    }
+    setAuthLoading(true);
+    try {
+      await resetPassword(email);
+      setAuthNotice(t("account.resetSent"));
+    } catch (err) {
+      console.error("[auth]", err.code, err.message);
+      setAuthError(authErrorMessage(err, lang));
     } finally {
       setAuthLoading(false);
     }
@@ -188,6 +212,7 @@ export default function Account() {
                 onChange={(e) => setPassword(e.target.value)}
               />
               {authError && <p className="text-sm text-crimson">{authError}</p>}
+              {authNotice && <p className="text-sm text-midnight/70">{authNotice}</p>}
               <button
                 type="submit"
                 disabled={authLoading}
@@ -199,6 +224,18 @@ export default function Account() {
                     ? t("account.signIn")
                     : t("account.create")}
               </button>
+              {mode === "login" && (
+                <p className="pt-2">
+                  <button
+                    type="button"
+                    onClick={handleReset}
+                    disabled={authLoading}
+                    className="text-[10px] tracking-[0.22em] uppercase text-midnight/45 hover:text-crimson border-b border-midnight/20 pb-0.5 disabled:opacity-50"
+                  >
+                    {t("account.forgotPassword")}
+                  </button>
+                </p>
+              )}
             </form>
           </Reveal>
         )}

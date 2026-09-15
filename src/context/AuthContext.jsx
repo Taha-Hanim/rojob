@@ -9,6 +9,7 @@ import {
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
@@ -87,7 +88,8 @@ export function AuthProvider({ children }) {
       if (u) {
         try {
           await ensureUserDoc(u);
-        } catch {
+        } catch (err) {
+          console.error("[auth] profile document unavailable:", err.code, err.message);
           setProfile(null);
         }
       } else {
@@ -97,13 +99,29 @@ export function AuthProvider({ children }) {
     });
   }, [ensureUserDoc]);
 
+  /**
+   * The account itself lives in Firebase Auth; the Firestore document only backs
+   * the profile, saved addresses and wishlist. If that write fails (rules, quota,
+   * offline) the visitor is still signed in, so never fail the whole flow for it.
+   */
+  const ensureUserDocSafely = useCallback(
+    async (user, extra) => {
+      try {
+        await ensureUserDoc(user, extra);
+      } catch (err) {
+        console.error("[auth] profile document unavailable:", err.code, err.message);
+      }
+    },
+    [ensureUserDoc]
+  );
+
   const login = useCallback(
     async (email, password) => {
       const cred = await signInWithEmailAndPassword(auth, email, password);
-      await ensureUserDoc(cred.user);
+      await ensureUserDocSafely(cred.user);
       return cred;
     },
-    [ensureUserDoc]
+    [ensureUserDocSafely]
   );
 
   const register = useCallback(
@@ -112,13 +130,18 @@ export function AuthProvider({ children }) {
       if (displayName) {
         await updateProfile(cred.user, { displayName });
       }
-      await ensureUserDoc(cred.user, { displayName, phone });
+      await ensureUserDocSafely(cred.user, { displayName, phone });
       return cred;
     },
-    [ensureUserDoc]
+    [ensureUserDocSafely]
   );
 
   const logout = useCallback(() => (auth ? signOut(auth) : Promise.resolve()), []);
+
+  const resetPassword = useCallback(
+    (email) => sendPasswordResetEmail(auth, email.trim()),
+    []
+  );
 
   const saveProfile = useCallback(
     async (patch) => {
@@ -154,10 +177,22 @@ export function AuthProvider({ children }) {
       login,
       register,
       logout,
+      resetPassword,
       saveProfile,
       refreshProfile: () => (user ? loadProfile(user.uid) : Promise.resolve(null)),
     }),
-    [user, profile, ready, isAdmin, login, register, logout, saveProfile, loadProfile]
+    [
+      user,
+      profile,
+      ready,
+      isAdmin,
+      login,
+      register,
+      logout,
+      resetPassword,
+      saveProfile,
+      loadProfile,
+    ]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

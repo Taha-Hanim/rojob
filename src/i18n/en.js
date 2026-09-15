@@ -106,6 +106,11 @@ export default {
   },
   product: {
     addToBag: "Add to bag",
+    buyNow: "Buy now",
+    added: "Added to bag",
+    bag: "Bag",
+    shippingNote: "Free delivery over 500 zł · 30-day returns",
+    oneSize: "Cut to one size, knitted to stretch comfortably.",
     selectSize: "Select size",
     colour: "Colour",
     size: "Size",
@@ -231,15 +236,20 @@ export default {
   contact: {
     title: "Contact",
     customerCare: "Customer care",
+    marketing: "Marketing",
+    marketingNote: "Forwards to contact@rojob.eu",
+    ceo: "CEO",
     press: "Press",
     wholesale: "Wholesale",
     general: "General enquiries",
-    emailPlaceholder: "[CONTACT EMAIL]",
+    emailPlaceholder: "contact@rojob.eu",
     emails: {
-      customerCare: "[CUSTOMER CARE EMAIL]",
-      press: "[PRESS EMAIL]",
-      wholesale: "[WHOLESALE EMAIL]",
-      general: "[GENERAL EMAIL]",
+      customerCare: "contact@rojob.eu",
+      press: "contact@rojob.eu",
+      wholesale: "contact@rojob.eu",
+      general: "contact@rojob.eu",
+      marketing: "marketing@rojob.eu",
+      ceo: "ceo@rojob.eu",
     },
     note: "We respond within two business days.",
     form: {
@@ -248,7 +258,12 @@ export default {
       email: "Email",
       message: "Message",
       send: "Send enquiry",
+      sending: "Sending…",
       sent: "Enquiry received",
+      sentCopy: "Your message was sent to contact@rojob.eu. We will reply to the email you provided.",
+      sendAnother: "Send another message",
+      sendError: "Could not send your message. Please email contact@rojob.eu directly.",
+      configError: "Email delivery is not configured. Please email contact@rojob.eu directly.",
     },
   },
   sizeGuide: {
@@ -260,7 +275,13 @@ export default {
     shoulder: "Shoulder",
     placeholder: "Measurements to be confirmed.",
     placeholderCell: "[To be confirmed]",
-    note: "Placeholder sizing until final garment specifications are available.",
+    note: "ROJOB follows standard international apparel sizing. Every measurement below is taken from the garment laid flat, in centimetres, and may vary by up to 2 cm.",
+    conversions: "International conversions",
+    garmentFlat: "Garment measured flat (cm)",
+    bodyChest: "Body chest to fit",
+    accessories: "Accessories",
+    accessoriesNote: "Beanies and scarves are cut to one size in a knit that stretches comfortably.",
+    fit: "Fit",
     measure: {
       chest: "Measure around the fullest part of the chest, keeping the tape horizontal and relaxed — not pulled tight.",
       length: "Measure from the highest point of the shoulder (near the neck) straight down to the desired hem.",
@@ -319,7 +340,7 @@ export default {
       nip: "[NIP]",
       regon: "[REGON/KRS]",
       address: "[REGISTERED ADDRESS]",
-      email: "[CONTACT EMAIL]",
+      email: "contact@rojob.eu",
     },
     bodies: {
       terms:
@@ -329,7 +350,7 @@ export default {
       cookies:
         "This website uses essential cookies required for security, language preference and shopping functionality. Optional analytics cookies are used only with your consent via the cookie banner.\n\nYou may withdraw consent at any time by adjusting your browser settings or using the cookie preferences on this site. For details on data processing related to cookies, see our Privacy policy.",
       deliveryReturns:
-        "Delivery and return policies for ROJOB orders will be published here prior to full commerce launch. Placeholder information only.\n\nEstimated delivery windows, shipping carriers, return windows and condition requirements will be confirmed by [LEGAL COMPANY NAME] before orders are accepted online. For pre-launch enquiries, contact [CONTACT EMAIL].",
+        "Orders are dispatched from Warsaw within 1–2 working days, Monday to Friday. You receive a tracking link by email as soon as the parcel leaves us.\n\nDelivery times and costs: Poland 1–2 working days, free over 500 PLN and otherwise 19 PLN. European Union 2–5 working days, free over 120 EUR and otherwise 25 EUR. United Kingdom, Switzerland and Norway 3–7 working days at 35 EUR with duties payable on delivery. Rest of world 5–10 working days at 45 EUR with duties and taxes payable on delivery.\n\nReturns are accepted within 30 days of delivery and are free of charge within Poland and the European Union. As an EU consumer you additionally hold a statutory 14-day right of withdrawal from the day you receive the goods, without giving any reason.\n\nReturned items must be unworn, unwashed and sent back with all tags and the original packaging intact. Refunds are issued to the original payment method within 14 days of us receiving the return. Size exchanges are free within Poland and the EU, subject to availability.\n\nTo start a return or exchange, email [CONTACT EMAIL] with your order number. Statutory warranty rights under Polish and EU consumer law are unaffected by this policy. [LEGAL COMPANY NAME], [REGISTERED ADDRESS].",
       payments:
         "Accepted payment methods and secure checkout details will be listed here before live transactions commence. ROJOB will use PCI-compliant payment processors.\n\nPrices are displayed in the currency selected on site. Final tax and duty treatment depends on delivery destination and will be confirmed at checkout.",
       complaints:
@@ -359,6 +380,9 @@ export default {
     addresses: "Addresses",
     wishlist: "Wishlist",
     profile: "Profile",
+    forgotPassword: "Forgot password?",
+    resetNeedsEmail: "Enter your email address first, then request a reset link.",
+    resetSent: "If an account exists for that address, a reset link is on its way. Check your spam folder too.",
     signIn: "Sign in",
     signOut: "Sign out",
     create: "Create account",

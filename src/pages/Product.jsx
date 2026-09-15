@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCatalog } from "../context/CatalogContext";
 import { useCart } from "../context/CartContext";
 import { useLang } from "../context/LangContext";
@@ -8,17 +8,18 @@ import { useWishlist } from "../context/WishlistContext";
 import { useCurrency } from "../context/CurrencyContext";
 import { getColorVariants } from "../lib/catalogFilters";
 import { imgSrc } from "../lib/cloudinary";
+import {
+  ACCESSORY_MEASUREMENTS,
+  CARE_INSTRUCTIONS,
+  DELIVERY_INFO,
+  FIT_NOTE,
+  GARMENT_MEASUREMENTS,
+  SIZE_CONVERSIONS,
+  measurementKindFor,
+} from "../data/productInfo";
 import Newsletter from "../components/Newsletter";
 import Reveal from "../components/Reveal";
 import Seo from "../components/Seo";
-
-const SIZE_PLACEHOLDERS = [
-  { eur: "XS", us: "[TBC]", uk: "[TBC]" },
-  { eur: "S", us: "[TBC]", uk: "[TBC]" },
-  { eur: "M", us: "[TBC]", uk: "[TBC]" },
-  { eur: "L", us: "[TBC]", uk: "[TBC]" },
-  { eur: "XL", us: "[TBC]", uk: "[TBC]" },
-];
 
 function AccordionSection({ title, children, defaultOpen = false }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -42,7 +43,8 @@ function AccordionSection({ title, children, defaultOpen = false }) {
 
 export default function Product() {
   const { slug } = useParams();
-  const { products } = useCatalog();
+  const navigate = useNavigate();
+  const { products, loading } = useCatalog();
   const { add } = useCart();
   const { t, lang } = useLang();
   const { commerceEnabled } = useSiteMode();
@@ -75,6 +77,17 @@ export default function Product() {
     setAdded(false);
   }, [slug, galleryImages]);
 
+  if (!product && loading) {
+    return (
+      <div className="max-w-3xl mx-auto px-5 py-28 text-center">
+        <Seo title="Product — ROJOB" />
+        <p className="text-[11px] tracking-[0.3em] uppercase text-midnight/40 animate-pulse">
+          {t("common.loading", "Loading")}
+        </p>
+      </div>
+    );
+  }
+
   if (!product) {
     return (
       <div className="max-w-3xl mx-auto px-5 py-28 text-center">
@@ -97,8 +110,12 @@ export default function Product() {
   const wishlisted = has(productId);
   const description = lang === "pl" && product.descriptionPl ? product.descriptionPl : product.description;
 
-  const addToBag = () => {
-    if (!canPurchase || !selectedSize) return;
+  const measurementKind = measurementKindFor(product);
+  const garmentRows = GARMENT_MEASUREMENTS[measurementKind] || GARMENT_MEASUREMENTS.top;
+  const delivery = DELIVERY_INFO[lang] || DELIVERY_INFO.en;
+
+  const putInBag = () => {
+    if (!canPurchase || !selectedSize) return false;
     add({
       productId,
       slug: product.slug,
@@ -110,8 +127,18 @@ export default function Product() {
       price: product.price,
       qty: 1,
     });
+    return true;
+  };
+
+  const addToBag = () => {
+    if (!putInBag()) return;
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
+  };
+
+  const buyNow = () => {
+    if (!putInBag()) return;
+    navigate("/checkout");
   };
 
   const handlePrivateAccess = () => {
@@ -275,47 +302,126 @@ export default function Product() {
               </div>
             </div>
 
-            {/* Desktop CTA */}
-            <div className="hidden md:block mt-12">
-              <button
-                type="button"
-                onClick={handleCta}
-                disabled={canPurchase && !selectedSize}
-                className="w-full bg-crimson text-porcelain py-4 text-[11px] tracking-[0.3em] uppercase hover:bg-midnight transition-colors duration-500 disabled:opacity-40"
-              >
-                {ctaLabel}
-              </button>
-              {!canPurchase && (
-                <p className="mt-3 text-xs text-midnight/45 text-center">
-                  {product.status === "preview"
-                    ? "Register for early access when this piece becomes available."
-                    : "Private access opens before public release."}
-                </p>
+            {/* Purchase CTA */}
+            <div className="mt-12">
+              {canPurchase ? (
+                <div className="space-y-3">
+                  <button
+                    type="button"
+                    onClick={buyNow}
+                    disabled={!selectedSize}
+                    className="w-full bg-crimson text-porcelain py-4 text-[11px] tracking-[0.3em] uppercase hover:bg-midnight transition-colors duration-500 disabled:opacity-40"
+                  >
+                    {t("product.buyNow", "Buy now")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={addToBag}
+                    disabled={!selectedSize}
+                    className="w-full border border-midnight/25 text-midnight py-4 text-[11px] tracking-[0.3em] uppercase hover:border-midnight hover:bg-midnight hover:text-porcelain transition-colors duration-500 disabled:opacity-40"
+                  >
+                    {added ? t("product.added", "Added to bag") : t("product.addToBag")}
+                  </button>
+                  <p className="pt-1 text-[10px] tracking-[0.18em] uppercase text-midnight/40 text-center">
+                    {t("product.shippingNote", "Free delivery over 500 zł · 30-day returns")}
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleCta}
+                    className="w-full bg-crimson text-porcelain py-4 text-[11px] tracking-[0.3em] uppercase hover:bg-midnight transition-colors duration-500"
+                  >
+                    {ctaLabel}
+                  </button>
+                  <p className="mt-3 text-xs text-midnight/45 text-center">
+                    {product.status === "preview"
+                      ? "Register for early access when this piece becomes available."
+                      : "Private access opens before public release."}
+                  </p>
+                </>
               )}
             </div>
 
             {/* Accordions */}
             <div className="mt-12 md:mt-16">
               <AccordionSection title={t("product.sizeGuide")}>
-                <p className="mb-4 text-midnight/55">{t("sizeGuide.note")}</p>
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="text-[10px] tracking-[0.15em] uppercase text-midnight/45">
-                      <th className="py-2 text-left">EUR</th>
-                      <th className="text-left">US</th>
-                      <th className="text-left">UK</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {SIZE_PLACEHOLDERS.map((row) => (
-                      <tr key={row.eur} className="border-t border-midnight/5">
-                        <td className="py-1.5">{row.eur}</td>
-                        <td>{row.us}</td>
-                        <td>{row.uk}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                {measurementKind === "accessory" ? (
+                  <>
+                    <p className="mb-4">
+                      {t("product.oneSize", "Cut to one size, knitted to stretch comfortably.")}
+                    </p>
+                    <dl className="space-y-1.5">
+                      {(ACCESSORY_MEASUREMENTS[lang] || ACCESSORY_MEASUREMENTS.en).map((row) => (
+                        <div key={row.label} className="flex justify-between gap-6 border-t border-midnight/5 py-1.5">
+                          <dt className="text-midnight/55">{row.label}</dt>
+                          <dd className="text-right tabular-nums">{row.value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </>
+                ) : (
+                  <>
+                    <p className="mb-4 text-midnight/55">{FIT_NOTE[lang] || FIT_NOTE.en}</p>
+                    <table className="w-full text-sm tabular-nums">
+                      <thead>
+                        <tr className="text-[10px] tracking-[0.15em] uppercase text-midnight/45">
+                          <th className="py-2 text-left font-normal">Size</th>
+                          <th className="text-left font-normal">EU</th>
+                          <th className="text-left font-normal">UK</th>
+                          <th className="text-left font-normal">US</th>
+                          <th className="text-left font-normal">IT</th>
+                          <th className="text-left font-normal">{t("sizeGuide.chest")} cm</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {SIZE_CONVERSIONS.map((row) => (
+                          <tr key={row.size} className="border-t border-midnight/5">
+                            <td className="py-1.5">{row.size}</td>
+                            <td>{row.eu}</td>
+                            <td>{row.uk}</td>
+                            <td>{row.us}</td>
+                            <td>{row.it}</td>
+                            <td>{row.chestCm}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+
+                    <p className="mt-6 mb-2 text-[10px] tracking-[0.18em] uppercase text-midnight/45">
+                      {t("sizeGuide.garmentFlat", "Garment measured flat (cm)")}
+                    </p>
+                    <table className="w-full text-sm tabular-nums">
+                      <thead>
+                        <tr className="text-[10px] tracking-[0.15em] uppercase text-midnight/45">
+                          <th className="py-2 text-left font-normal">Size</th>
+                          <th className="text-left font-normal">{t("sizeGuide.chest")}</th>
+                          <th className="text-left font-normal">{t("sizeGuide.length")}</th>
+                          <th className="text-left font-normal">{t("sizeGuide.sleeve")}</th>
+                          <th className="text-left font-normal">{t("sizeGuide.shoulder")}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {garmentRows.map((row) => (
+                          <tr key={row.size} className="border-t border-midnight/5">
+                            <td className="py-1.5">{row.size}</td>
+                            <td>{row.chest}</td>
+                            <td>{row.length}</td>
+                            <td>{row.sleeve}</td>
+                            <td>{row.shoulder}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </>
+                )}
+                <Link
+                  to="/size-guide"
+                  className="inline-block mt-6 text-[10px] tracking-[0.2em] uppercase text-midnight/50 hover:text-crimson border-b border-midnight/20 pb-0.5"
+                >
+                  {t("sizeGuide.howTo")} →
+                </Link>
               </AccordionSection>
 
               <AccordionSection title={t("product.details")} defaultOpen>
@@ -336,7 +442,11 @@ export default function Product() {
               </AccordionSection>
 
               <AccordionSection title={t("product.care")}>
-                <p>[Care instructions — to be confirmed]</p>
+                <ul className="space-y-2.5">
+                  {(CARE_INSTRUCTIONS[lang] || CARE_INSTRUCTIONS.en).map((line) => (
+                    <li key={line}>— {line}</li>
+                  ))}
+                </ul>
               </AccordionSection>
 
               <AccordionSection title={t("product.origin")}>
@@ -346,7 +456,36 @@ export default function Product() {
               </AccordionSection>
 
               <AccordionSection title={t("product.delivery")}>
-                <p>[Delivery & returns — to be confirmed]</p>
+                <dl className="space-y-3">
+                  {delivery.shipping.map((row) => (
+                    <div key={row.region} className="border-t border-midnight/5 pt-3">
+                      <dt className="text-midnight">{row.region}</dt>
+                      <dd className="text-midnight/60">
+                        {row.time} · {row.cost}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+                {delivery.notes.map((note) => (
+                  <p key={note} className="mt-4">
+                    {note}
+                  </p>
+                ))}
+
+                <p className="mt-7 mb-2 text-[10px] tracking-[0.18em] uppercase text-midnight/45">
+                  {t("legal.returns", "Returns")}
+                </p>
+                <ul className="space-y-2.5">
+                  {delivery.returns.map((line) => (
+                    <li key={line}>— {line}</li>
+                  ))}
+                </ul>
+                <Link
+                  to="/delivery-returns"
+                  className="inline-block mt-6 text-[10px] tracking-[0.2em] uppercase text-midnight/50 hover:text-crimson border-b border-midnight/20 pb-0.5"
+                >
+                  {t("product.delivery")} →
+                </Link>
               </AccordionSection>
             </div>
 
@@ -368,19 +507,39 @@ export default function Product() {
 
       {/* Sticky mobile bar */}
       <div className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-porcelain/95 backdrop-blur-sm border-t border-midnight/10 px-5 py-4 safe-area-pb">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <div className="flex-1 min-w-0">
             <p className="font-serif text-lg truncate">{product.name}</p>
             <p className="text-sm tabular-nums text-midnight/60">{formatPrice(product.price)}</p>
           </div>
-          <button
-            type="button"
-            onClick={handleCta}
-            disabled={canPurchase && !selectedSize}
-            className="shrink-0 bg-crimson text-porcelain px-6 py-3.5 text-[10px] tracking-[0.25em] uppercase hover:bg-midnight transition-colors disabled:opacity-40"
-          >
-            {ctaLabel}
-          </button>
+          {canPurchase ? (
+            <>
+              <button
+                type="button"
+                onClick={addToBag}
+                disabled={!selectedSize}
+                className="shrink-0 border border-midnight/25 px-4 py-3.5 text-[10px] tracking-[0.2em] uppercase hover:border-midnight transition-colors disabled:opacity-40"
+              >
+                {added ? t("product.added", "Added to bag") : t("product.bag", "Bag")}
+              </button>
+              <button
+                type="button"
+                onClick={buyNow}
+                disabled={!selectedSize}
+                className="shrink-0 bg-crimson text-porcelain px-5 py-3.5 text-[10px] tracking-[0.2em] uppercase hover:bg-midnight transition-colors disabled:opacity-40"
+              >
+                {t("product.buyNow", "Buy now")}
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={handleCta}
+              className="shrink-0 bg-crimson text-porcelain px-6 py-3.5 text-[10px] tracking-[0.25em] uppercase hover:bg-midnight transition-colors"
+            >
+              {ctaLabel}
+            </button>
+          )}
         </div>
       </div>
     </>

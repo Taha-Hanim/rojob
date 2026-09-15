@@ -106,6 +106,11 @@ export default {
   },
   product: {
     addToBag: "Dodaj do torby",
+    buyNow: "Kup teraz",
+    added: "Dodano do torby",
+    bag: "Torba",
+    shippingNote: "Darmowa dostawa powyżej 500 zł · 30 dni na zwrot",
+    oneSize: "Jeden rozmiar, dzianina swobodnie się rozciąga.",
     selectSize: "Wybierz rozmiar",
     colour: "Kolor",
     size: "Rozmiar",
@@ -231,15 +236,20 @@ export default {
   contact: {
     title: "Kontakt",
     customerCare: "Obsługa klienta",
+    marketing: "Marketing",
+    marketingNote: "Przekierowanie na contact@rojob.eu",
+    ceo: "CEO",
     press: "Prasa",
     wholesale: "Hurt",
     general: "Zapytania ogólne",
-    emailPlaceholder: "[ADRES E-MAIL KONTAKTOWY]",
+    emailPlaceholder: "contact@rojob.eu",
     emails: {
-      customerCare: "[E-MAIL OBSŁUGI KLIENTA]",
-      press: "[E-MAIL PRASOWY]",
-      wholesale: "[E-MAIL HURTOWY]",
-      general: "[E-MAIL OGÓLNY]",
+      customerCare: "contact@rojob.eu",
+      press: "contact@rojob.eu",
+      wholesale: "contact@rojob.eu",
+      general: "contact@rojob.eu",
+      marketing: "marketing@rojob.eu",
+      ceo: "ceo@rojob.eu",
     },
     note: "Odpowiadamy w ciągu dwóch dni roboczych.",
     form: {
@@ -248,7 +258,12 @@ export default {
       email: "E-mail",
       message: "Wiadomość",
       send: "Wyślij zapytanie",
+      sending: "Wysyłanie…",
       sent: "Zapytanie otrzymane",
+      sentCopy: "Wiadomość została wysłana na contact@rojob.eu. Odpowiemy na podany adres e-mail.",
+      sendAnother: "Wyślij kolejną wiadomość",
+      sendError: "Nie udało się wysłać wiadomości. Napisz bezpośrednio na contact@rojob.eu.",
+      configError: "Wysyłka e-mail nie jest skonfigurowana. Napisz bezpośrednio na contact@rojob.eu.",
     },
   },
   sizeGuide: {
@@ -260,7 +275,13 @@ export default {
     shoulder: "Barki",
     placeholder: "Wymiary do potwierdzenia.",
     placeholderCell: "[Do potwierdzenia]",
-    note: "Tabela robocza do czasu otrzymania finalnych specyfikacji produktów.",
+    note: "ROJOB stosuje standardowe międzynarodowe rozmiarówki odzieży. Wszystkie wymiary podano dla produktu rozłożonego na płasko, w centymetrach, z tolerancją do 2 cm.",
+    conversions: "Przeliczniki międzynarodowe",
+    garmentFlat: "Wymiary produktu na płasko (cm)",
+    bodyChest: "Obwód klatki piersiowej",
+    accessories: "Akcesoria",
+    accessoriesNote: "Czapki i szaliki mają jeden rozmiar, a dzianina swobodnie się rozciąga.",
+    fit: "Krój",
     measure: {
       chest: "Zmierz wokół najszerszej części klatki piersiowej, trzymając taśmę poziomo i luźno — bez ściskania.",
       length: "Zmierz od najwyższego punktu ramienia (przy szyi) prosto w dół do pożądanego dołu.",
@@ -320,7 +341,7 @@ export default {
       nip: "[NIP]",
       regon: "[REGON/KRS]",
       address: "[ADRES REJESTROWY]",
-      email: "[ADRES E-MAIL KONTAKTOWY]",
+      email: "contact@rojob.eu",
     },
     bodies: {
       terms:
@@ -330,7 +351,7 @@ export default {
       cookies:
         "Ta witryna używa niezbędnych plików cookie wymaganych do bezpieczeństwa, preferencji językowych i funkcji sklepu. Opcjonalne pliki analityczne stosujemy wyłącznie za Twoją zgodą w banerze cookie.\n\nMożesz wycofać zgodę w dowolnym momencie, zmieniając ustawienia przeglądarki lub preferencje cookie na tej stronie. Szczegóły przetwarzania danych związanych z plikami cookie znajdziesz w Polityce prywatności.",
       deliveryReturns:
-        "Polityka dostaw i zwrotów dla zamówień ROJOB zostanie opublikowana przed pełnym uruchomieniem handlu. Informacje tymczasowe.\n\nSzacunkowe terminy dostaw, przewoźnicy, okresy zwrotu i wymagania dotyczące stanu produktu zostaną potwierdzone przez [NAZWA PRAWNA FIRMY] przed przyjmowaniem zamówień online. W sprawach przedpremierowych: [ADRES E-MAIL KONTAKTOWY].",
+        "Zamówienia wysyłamy z Warszawy w ciągu 1–2 dni roboczych, od poniedziałku do piątku. Link do śledzenia przesyłki otrzymasz e-mailem, gdy paczka od nas wyjedzie.\n\nCzas i koszt dostawy: Polska 1–2 dni robocze, gratis powyżej 500 PLN, poniżej 19 PLN. Unia Europejska 2–5 dni roboczych, gratis powyżej 120 EUR, poniżej 25 EUR. Wielka Brytania, Szwajcaria i Norwegia 3–7 dni roboczych za 35 EUR, cło płatne przy odbiorze. Pozostałe kraje 5–10 dni roboczych za 45 EUR, cło i podatki płatne przy odbiorze.\n\nZwroty przyjmujemy w ciągu 30 dni od dostawy; na terenie Polski i Unii Europejskiej są bezpłatne. Jako konsument w UE masz dodatkowo ustawowe prawo odstąpienia od umowy w ciągu 14 dni od otrzymania towaru, bez podania przyczyny.\n\nZwracane produkty muszą być nienoszone, nieprane oraz odesłane ze wszystkimi metkami i oryginalnym opakowaniem. Zwrot środków realizujemy na pierwotną metodę płatności w ciągu 14 dni od otrzymania przesyłki zwrotnej. Wymiana rozmiaru jest bezpłatna w Polsce i UE, w miarę dostępności.\n\nAby zgłosić zwrot lub wymianę, napisz na [ADRES E-MAIL KONTAKTOWY], podając numer zamówienia. Niniejsza polityka nie narusza ustawowych uprawnień konsumenta wynikających z prawa polskiego i unijnego. [NAZWA PRAWNA FIRMY], [ADRES REJESTROWY].",
       payments:
         "Akceptowane metody płatności i szczegóły bezpiecznej kasy zostaną wymienione przed rozpoczęciem transakcji na żywo. ROJOB będzie korzystać z procesorów płatności zgodnych z PCI.\n\nCeny wyświetlane są w walucie wybranej na stronie. Ostateczne podatki i cła zależą od kraju dostawy i zostaną potwierdzone przy kasie.",
       complaints:
@@ -360,6 +381,9 @@ export default {
     addresses: "Adresy",
     wishlist: "Lista życzeń",
     profile: "Profil",
+    forgotPassword: "Nie pamiętasz hasła?",
+    resetNeedsEmail: "Najpierw podaj adres e-mail, a potem poproś o link resetujący.",
+    resetSent: "Jeśli konto dla tego adresu istnieje, link resetujący jest już w drodze. Sprawdź także folder spam.",
     signIn: "Zaloguj się",
     signOut: "Wyloguj się",
     create: "Utwórz konto",
