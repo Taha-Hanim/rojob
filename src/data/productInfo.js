@@ -91,7 +91,7 @@ export const DELIVERY_INFO = {
       "As an EU consumer you additionally hold a statutory 14-day right of withdrawal from the day you receive the goods, without giving any reason.",
       "Items must be unworn, unwashed and returned with all tags and the original packaging intact.",
       "Refunds are issued to the original payment method within 14 days of us receiving the return.",
-      "Size exchanges are free within Poland and the EU, subject to availability. Start a return or exchange by emailing contact@rojob.eu with your order number.",
+      "Size exchanges are free within Poland and the EU, subject to availability. Start a return or exchange by emailing info@rojob.eu with your order number.",
     ],
   },
   pl: {
@@ -110,7 +110,7 @@ export const DELIVERY_INFO = {
       "Jako konsument w UE masz dodatkowo ustawowe prawo odstąpienia od umowy w ciągu 14 dni od otrzymania towaru, bez podania przyczyny.",
       "Produkty muszą być nienoszone, nieprane oraz zwrócone ze wszystkimi metkami i oryginalnym opakowaniem.",
       "Zwrot środków realizujemy na pierwotną metodę płatności w ciągu 14 dni od otrzymania przesyłki zwrotnej.",
-      "Wymiana rozmiaru jest bezpłatna w Polsce i UE, w miarę dostępności. Zwrot lub wymianę zgłoś na contact@rojob.eu, podając numer zamówienia.",
+      "Wymiana rozmiaru jest bezpłatna w Polsce i UE, w miarę dostępności. Zwrot lub wymianę zgłoś na info@rojob.eu, podając numer zamówienia.",
     ],
   },
 };

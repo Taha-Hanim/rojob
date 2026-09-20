@@ -33,7 +33,7 @@ export default function Header() {
   const { openMenu, openSearch, openBag } = useUI();
   const [scrolled, setScrolled] = useState(false);
 
-  const overHero = pathname === "/";
+  const overHero = pathname === "/" || pathname === "/wholesale";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);

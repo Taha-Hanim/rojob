@@ -6,7 +6,7 @@ const TEMPLATE_ID =
   import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 const TO_EMAIL = (
-  import.meta.env.VITE_CONTACT_EMAIL || "contact@rojob.eu"
+  import.meta.env.VITE_CONTACT_EMAIL || "info@rojob.eu"
 ).trim();
 
 export function isContactEmailConfigured() {
@@ -14,7 +14,7 @@ export function isContactEmailConfigured() {
 }
 
 /**
- * Send a contact / trade enquiry to contact@rojob.eu via EmailJS.
+ * Send a contact / trade enquiry to info@rojob.eu via EmailJS.
  * Template fields: To {{to_email}}, Reply-To {{reply_to}}, Subject {{subject}}
  * Body can use {{from_name}}, {{customer_email}}, {{department}}, {{message}}
  */

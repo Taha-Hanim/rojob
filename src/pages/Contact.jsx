@@ -8,18 +8,17 @@ import Reveal from "../components/Reveal";
 
 const INQUIRIES_KEY = "rojob_inquiries";
 
-/** Public addresses shown on the page. Form delivery always goes to contact@. */
+/** Public addresses shown on the page. Form delivery always goes to info@. */
 const DEPARTMENTS = [
   {
     id: "contact",
-    email: "contact@rojob.eu",
+    email: "info@rojob.eu",
     labelKey: "contact.customerCare",
   },
   {
     id: "marketing",
     email: "marketing@rojob.eu",
     labelKey: "contact.marketing",
-    noteKey: "contact.marketingNote",
   },
   {
     id: "ceo",
@@ -27,6 +26,9 @@ const DEPARTMENTS = [
     labelKey: "contact.ceo",
   },
 ];
+
+const PHONE = "+48 786 305 405";
+const PHONE_HREF = "tel:+48786305405";
 
 const FIELD =
   "mt-2 w-full bg-transparent border-b border-midnight/25 py-2.5 text-sm focus:outline-none focus:border-midnight/60";
@@ -117,13 +119,20 @@ export default function Contact() {
                   >
                     {dept.email}
                   </a>
-                  {dept.noteKey && (
-                    <p className="mt-2 text-xs text-midnight/45 leading-relaxed max-w-xs">
-                      {t(dept.noteKey)}
-                    </p>
-                  )}
                 </div>
               ))}
+
+              <div>
+                <p className="text-[10px] tracking-[0.32em] uppercase text-midnight/45">
+                  {t("contact.phone")}
+                </p>
+                <a
+                  href={PHONE_HREF}
+                  className="mt-2 inline-block font-serif text-2xl hover:text-crimson transition-colors"
+                >
+                  {PHONE}
+                </a>
+              </div>
             </div>
           </Reveal>
 

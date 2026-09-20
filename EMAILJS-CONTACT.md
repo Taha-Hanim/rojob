@@ -1,6 +1,6 @@
 # Contact form → EmailJS
 
-The contact form sends every enquiry to **`contact@rojob.eu`** (via `VITE_CONTACT_EMAIL`).
+The contact form sends every enquiry to **`info@rojob.eu`** (via `VITE_CONTACT_EMAIL`).
 
 ## EmailJS template (recommended)
 
@@ -27,8 +27,8 @@ Optional: set `VITE_EMAILJS_CONTACT_TEMPLATE_ID` if contact should use a differe
 
 | Address | Role |
 |---|---|
-| `contact@rojob.eu` | Main inbox (form destination) |
-| `marketing@rojob.eu` | Forward to `contact@rojob.eu` |
+| `info@rojob.eu` | Main inbox (form destination) |
+| `marketing@rojob.eu` | Forward to `info@rojob.eu` |
 | `ceo@rojob.eu` | CEO / admin |
 
 Forwarding is configured in Microsoft 365 admin, not in this app.
