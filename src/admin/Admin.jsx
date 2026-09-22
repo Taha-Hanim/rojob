@@ -35,16 +35,17 @@ const emptyProduct = () => ({
   colorHex: "#F3EFE7",
   category: "Knitwear",
   price: null,
+  compareAtPrice: null,
   currency: "PLN",
   fabric: "100% Cotton",
   description: "",
   descriptionPl: "",
   details: [],
-  sizes: ["XS", "S", "M", "L", "XL"],
+  sizes: ["S", "M", "L", "XL", "XXL"],
   images: { front: "", hover: "", gallery: [] },
   featured: false,
   stock: 25,
-  stockBySize: { XS: 5, S: 5, M: 5, L: 5, XL: 5 },
+  stockBySize: { S: 5, M: 5, L: 5, XL: 5, XXL: 5 },
   status: "available",
   sku: "",
   designedIn: "Warsaw",
@@ -339,6 +340,10 @@ export default function Admin() {
                   images: { ...rest.images, gallery },
                   id,
                   price: rest.price === "" || rest.price == null ? null : Number(rest.price),
+                  compareAtPrice:
+                    rest.compareAtPrice === "" || rest.compareAtPrice == null
+                      ? null
+                      : Number(rest.compareAtPrice),
                   stock: Number(rest.stock || 0),
                 });
                 setMsg("Product saved.");
@@ -444,7 +449,8 @@ function ProductForm({ product, setProduct, onSave }) {
       <input className="w-full border-b py-2 bg-transparent" placeholder="Colour name" value={product.color} onChange={(e) => set("color", e.target.value)} />
       <input className="w-full border-b py-2 bg-transparent" placeholder="Colour id" value={product.colorId} onChange={(e) => set("colorId", e.target.value)} />
       <input className="w-full border-b py-2 bg-transparent" placeholder="Colour hex" value={product.colorHex} onChange={(e) => set("colorHex", e.target.value)} />
-      <input className="w-full border-b py-2 bg-transparent" placeholder="Price (empty = —)" value={product.price ?? ""} onChange={(e) => set("price", e.target.value === "" ? null : e.target.value)} />
+      <input className="w-full border-b py-2 bg-transparent" placeholder="Sale price (empty = —)" value={product.price ?? ""} onChange={(e) => set("price", e.target.value === "" ? null : e.target.value)} />
+      <input className="w-full border-b py-2 bg-transparent" placeholder="Original price" value={product.compareAtPrice ?? ""} onChange={(e) => set("compareAtPrice", e.target.value === "" ? null : e.target.value)} />
       <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
         {(product.sizes?.length ? product.sizes : ["One size"]).map((size) => (
           <label key={size} className="block text-[10px] tracking-[0.16em] uppercase text-midnight/45">

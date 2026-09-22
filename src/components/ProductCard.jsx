@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 import { useLang } from "../context/LangContext";
-import { useCurrency } from "../context/CurrencyContext";
 import { imgSrc } from "../lib/cloudinary";
+import Price, { isOnSale } from "../components/Price";
 import { isProductInStock } from "../lib/inventory";
 
 export default function ProductCard({ product, index = 0 }) {
   const { t } = useLang();
-  const { formatPrice } = useCurrency();
   const front = product.images?.front;
   const slug = product.slug || product.id;
   const colorOptions = product.colorOptions || [];
@@ -21,11 +20,13 @@ export default function ProductCard({ product, index = 0 }) {
 
   const label = soldOut
     ? t("product.outOfStock")
-    : product.status === "preview"
-      ? t("product.preview")
-      : product.featured
-        ? t("product.new")
-        : null;
+    : isOnSale(product)
+      ? t("product.sale")
+      : product.status === "preview"
+        ? t("product.preview")
+        : product.featured
+          ? t("product.new")
+          : null;
 
   return (
     <Link to={`/products/${slug}`} className="group block">
@@ -56,7 +57,7 @@ export default function ProductCard({ product, index = 0 }) {
         {label && (
           <span
             className={`absolute top-3 left-3 text-[9px] tracking-[0.28em] uppercase px-2 py-1 backdrop-blur-sm ${
-              soldOut ? "text-crimson bg-porcelain/90" : "text-midnight/55 bg-porcelain/85"
+              soldOut ? "text-crimson bg-porcelain/90" : isOnSale(product) ? "text-crimson bg-porcelain/90" : "text-midnight/55 bg-porcelain/85"
             }`}
           >
             {label}
@@ -85,7 +86,9 @@ export default function ProductCard({ product, index = 0 }) {
             </p>
           ) : null}
         </div>
-        <p className="text-sm shrink-0 tabular-nums">{formatPrice(product.price)}</p>
+        <p className="text-sm shrink-0">
+          <Price product={product} />
+        </p>
       </div>
     </Link>
   );

@@ -6,28 +6,28 @@
 
 /** Alpha size → international equivalents, plus body measurements to fit. */
 export const SIZE_CONVERSIONS = [
-  { size: "XS", eu: "44", uk: "34", us: "34", it: "44", chestCm: "86–91", chestIn: "34–36" },
   { size: "S", eu: "46", uk: "36", us: "36", it: "46", chestCm: "92–97", chestIn: "36–38" },
   { size: "M", eu: "48–50", uk: "38–40", us: "38–40", it: "48", chestCm: "98–104", chestIn: "38–41" },
   { size: "L", eu: "52", uk: "42", us: "42", it: "52", chestCm: "105–112", chestIn: "41–44" },
   { size: "XL", eu: "54", uk: "44", us: "44", it: "54", chestCm: "113–120", chestIn: "44–47" },
+  { size: "XXL", eu: "56", uk: "46", us: "46", it: "56", chestCm: "121–128", chestIn: "48–50" },
 ];
 
 /** Flat garment measurements in centimetres for the Cable Cotton knitwear block. */
 export const GARMENT_MEASUREMENTS = {
   top: [
-    { size: "XS", chest: "52", length: "66", sleeve: "61", shoulder: "44" },
     { size: "S", chest: "55", length: "68", sleeve: "62.5", shoulder: "46" },
     { size: "M", chest: "58", length: "70", sleeve: "64", shoulder: "48" },
     { size: "L", chest: "61", length: "72", sleeve: "65.5", shoulder: "50" },
     { size: "XL", chest: "64", length: "74", sleeve: "67", shoulder: "52" },
+    { size: "XXL", chest: "67", length: "76", sleeve: "68.5", shoulder: "54" },
   ],
   vest: [
-    { size: "XS", chest: "52", length: "62", sleeve: "—", shoulder: "36" },
     { size: "S", chest: "55", length: "64", sleeve: "—", shoulder: "38" },
     { size: "M", chest: "58", length: "66", sleeve: "—", shoulder: "40" },
     { size: "L", chest: "61", length: "68", sleeve: "—", shoulder: "42" },
     { size: "XL", chest: "64", length: "70", sleeve: "—", shoulder: "44" },
+    { size: "XXL", chest: "67", length: "72", sleeve: "—", shoulder: "46" },
   ],
 };
 

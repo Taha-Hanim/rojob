@@ -29,7 +29,7 @@ export const COLOR_FILTERS = [
   { id: "midnight", label: "Midnight", hex: "#0D1A2F" },
 ];
 
-export const SIZE_FILTERS = ["All", "XS", "S", "M", "L", "XL", "One size"];
+export const SIZE_FILTERS = ["All", "S", "M", "L", "XL", "XXL", "One size"];
 
 export const AVAILABILITY_FILTERS = [
   { id: "All", label: "All" },

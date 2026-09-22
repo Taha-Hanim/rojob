@@ -48,6 +48,20 @@ export function firstInStockSize(product) {
   return sizes.find((s) => isSizeInStock(product, s)) || sizes[0] || null;
 }
 
+export function remapStockToSizes(product, sizes) {
+  const nextSizes = sizes?.length ? sizes : product?.sizes?.length ? product.sizes : ["One size"];
+  const current = stockMap(product);
+  const map = {};
+  for (const size of nextSizes) {
+    if (size === "XXL") {
+      map[size] = Math.max(0, Math.floor(Number(current.XXL ?? current.XS ?? 0)));
+    } else {
+      map[size] = Math.max(0, Math.floor(Number(current[size] ?? 0)));
+    }
+  }
+  return map;
+}
+
 export function withNormalizedStock(product) {
   const stockBySize = stockMap(product);
   return {

@@ -126,6 +126,7 @@ export default {
     designedIn: "Designed in Warsaw",
     madeIn: "Made in Bangladesh",
     new: "New",
+    sale: "Sale",
     collectionCode: "01/26",
     outOfStock: "Out of stock",
     sizeOutOfStock: "This size is out of stock",

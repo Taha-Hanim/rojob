@@ -27,6 +27,7 @@ import {
   stockMap,
   withNormalizedStock,
   decrementMap,
+  remapStockToSizes,
 } from "./inventory";
 
 export { seedJournal };
@@ -41,7 +42,7 @@ function dropRetired(rows) {
   return rows.filter((p) => !RETIRED_PRODUCTS.has(p.slug || p.id));
 }
 
-/** Keep local seed commerce fields when Firestore still has preview / empty prices */
+/** Overlay catalogue prices, sizes and images from seed so shop updates without a reseed. */
 function mergeSeedCommerce(rows) {
   const bySlug = Object.fromEntries(seedProducts.map((p) => [p.slug, p]));
   return rows.map((p) => {
@@ -51,15 +52,17 @@ function mergeSeedCommerce(rows) {
       p.price == null || p.status === "preview" || p.status == null;
     const hasSizeStock =
       p.stockBySize && typeof p.stockBySize === "object" && Object.keys(p.stockBySize).length > 0;
+    const sizes = seed.sizes || p.sizes;
     return withNormalizedStock({
       ...p,
-      price: needsCommerce && p.price == null ? seed.price : p.price ?? seed.price,
+      price: seed.price ?? p.price,
+      compareAtPrice: seed.compareAtPrice ?? p.compareAtPrice,
+      sizes,
       status:
         needsCommerce && (p.status === "preview" || !p.status)
           ? seed.status
           : p.status || seed.status,
-      stockBySize: hasSizeStock ? p.stockBySize : seed.stockBySize,
-      // Prefer local catalogue imagery (corrected emblems)
+      stockBySize: hasSizeStock ? remapStockToSizes(p, sizes) : seed.stockBySize,
       images: seed.images,
     });
   });
@@ -233,7 +236,16 @@ export async function seedDatabase() {
       const existing = snap.exists() ? snap.data() : {};
       const keepStock =
         existing.stockBySize && Object.keys(existing.stockBySize).length > 0;
-      await setDoc(ref, keepStock ? { ...p, stockBySize: existing.stockBySize, stock: existing.stock } : p);
+      if (!keepStock) {
+        await setDoc(ref, p);
+        return;
+      }
+      const stockBySize = remapStockToSizes({ ...existing, sizes: existing.sizes || p.sizes }, p.sizes);
+      await setDoc(ref, {
+        ...p,
+        stockBySize,
+        stock: Object.values(stockBySize).reduce((n, v) => n + v, 0),
+      });
     })
   );
   await Promise.all(

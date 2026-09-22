@@ -2,9 +2,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCatalog } from "../context/CatalogContext";
 import { useLang } from "../context/LangContext";
-import { useSiteMode } from "../context/SiteModeContext";
 import { useUI } from "../context/UIContext";
 import { dedupeByProduct } from "../lib/catalogFilters";
+import Price from "./Price";
 
 const journalEntries = [
   { slug: "warsaw-light", titleKey: "journal.categories.warsaw", href: "/journal/warsaw-light" },
@@ -21,7 +21,6 @@ export default function SearchOverlay() {
   const { searchOpen, setSearchOpen } = useUI();
   const { t } = useLang();
   const { products } = useCatalog();
-  const { formatCurrency } = useSiteMode();
   const [query, setQuery] = useState("");
   const inputRef = useRef(null);
 
@@ -118,7 +117,9 @@ export default function SearchOverlay() {
                       <span className="font-serif text-2xl group-hover:text-crimson transition-colors duration-300">
                         {p.name}
                       </span>
-                      <span className="text-sm text-midnight/50">{formatCurrency(p.price)}</span>
+                      <span className="text-sm text-midnight/50">
+                        <Price product={p} saleClassName="text-crimson" />
+                      </span>
                     </Link>
                   </li>
                 ))}

@@ -126,6 +126,7 @@ export default {
     designedIn: "Zaprojektowano w Warszawie",
     madeIn: "Wyprodukowano w Bangladeszu",
     new: "Nowość",
+    sale: "Promocja",
     collectionCode: "01/26",
     outOfStock: "Brak w magazynie",
     sizeOutOfStock: "Ten rozmiar jest niedostępny",
