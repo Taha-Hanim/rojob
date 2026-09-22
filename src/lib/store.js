@@ -19,6 +19,15 @@ import {
   seedJournal,
   retiredProductSlugs,
 } from "../data/seed";
+import {
+  applySaleToLocalInventory,
+  overlayLocalInventory,
+  persistLocalProductStock,
+  saleShouldAdjustStock,
+  stockMap,
+  withNormalizedStock,
+  decrementMap,
+} from "./inventory";
 
 export { seedJournal };
 
@@ -37,37 +46,45 @@ function mergeSeedCommerce(rows) {
   const bySlug = Object.fromEntries(seedProducts.map((p) => [p.slug, p]));
   return rows.map((p) => {
     const seed = bySlug[p.slug || p.id];
-    if (!seed) return p;
+    if (!seed) return withNormalizedStock(p);
     const needsCommerce =
       p.price == null || p.status === "preview" || p.status == null;
-    return {
+    const hasSizeStock =
+      p.stockBySize && typeof p.stockBySize === "object" && Object.keys(p.stockBySize).length > 0;
+    return withNormalizedStock({
       ...p,
       price: needsCommerce && p.price == null ? seed.price : p.price ?? seed.price,
       status:
         needsCommerce && (p.status === "preview" || !p.status)
           ? seed.status
           : p.status || seed.status,
-      stock: (p.stock == null || p.stock === 0) && seed.stock ? seed.stock : p.stock,
+      stockBySize: hasSizeStock ? p.stockBySize : seed.stockBySize,
       // Prefer local catalogue imagery (corrected emblems)
       images: seed.images,
-    };
+    });
   });
 }
 
+function localCatalogue() {
+  return overlayLocalInventory(seedProducts.map((p) => ({ ...p, id: p.slug })));
+}
+
 export async function fetchProductsOnce() {
-  if (!isFirebaseConfigured) return seedProducts.map((p) => ({ ...p, id: p.slug }));
+  if (!isFirebaseConfigured) return localCatalogue();
   const snap = await getDocs(collection(db, "products"));
-  if (snap.empty) return seedProducts.map((p) => ({ ...p, id: p.slug }));
+  if (snap.empty) return localCatalogue();
   return mergeSeedCommerce(dropRetired(withIds(snap)));
 }
 
 export function subscribeProducts(cb) {
   if (!isFirebaseConfigured) {
-    cb(seedProducts.map((p) => ({ ...p, id: p.slug })));
-    return () => {};
+    const emit = () => cb(localCatalogue());
+    emit();
+    window.addEventListener("rojob-inventory", emit);
+    return () => window.removeEventListener("rojob-inventory", emit);
   }
   return onSnapshot(collection(db, "products"), (snap) => {
-    if (snap.empty) cb(seedProducts.map((p) => ({ ...p, id: p.slug })));
+    if (snap.empty) cb(localCatalogue());
     else cb(mergeSeedCommerce(dropRetired(withIds(snap))));
   });
 }
@@ -92,6 +109,33 @@ export function subscribeOrders(cb) {
   return onSnapshot(q, (snap) => cb(withIds(snap)));
 }
 
+async function applyPaidSale(items) {
+  applySaleToLocalInventory(items);
+
+  if (!isFirebaseConfigured) return;
+
+  for (const line of items || []) {
+    const id = line.productId || line.slug;
+    if (!id) continue;
+    const productRef = doc(db, "products", id);
+    try {
+      const snap = await getDoc(productRef);
+      const existing = snap.exists()
+        ? { id, ...snap.data() }
+        : seedProducts.find((p) => p.slug === id);
+      if (!existing) continue;
+      const nextMap = decrementMap(stockMap(existing), line.size, line.qty);
+      await setDoc(
+        productRef,
+        { stockBySize: nextMap, stock: Object.values(nextMap).reduce((n, v) => n + v, 0) },
+        { merge: true }
+      );
+    } catch {
+      /* order is already saved; inventory is best-effort */
+    }
+  }
+}
+
 export async function createOrder(payload) {
   const { status: statusOverride, ...rest } = payload;
   const order = {
@@ -103,25 +147,26 @@ export async function createOrder(payload) {
     const local = JSON.parse(localStorage.getItem("rojob_orders") || "[]");
     local.unshift({ ...order, id: crypto.randomUUID() });
     localStorage.setItem("rojob_orders", JSON.stringify(local));
+    if (saleShouldAdjustStock(payload)) applySaleToLocalInventory(payload.items);
     return { id: local[0].id, local: true };
   }
   const ref = await addDoc(collection(db, "orders"), order);
-
-  for (const line of payload.items || []) {
-    if (!line.productId) continue;
-    const productRef = doc(db, "products", line.productId);
-    try {
-      const snap = await getDoc(productRef);
-      if (!snap.exists()) continue;
-      const current = Number(snap.data().stock ?? 0);
-      const next = Math.max(0, current - Number(line.qty || 0));
-      await updateDoc(productRef, { stock: next });
-    } catch {
-      // Stock update is best-effort; order is already saved
-    }
-  }
-
+  if (saleShouldAdjustStock(payload)) await applyPaidSale(payload.items);
   return { id: ref.id };
+}
+
+export async function updateProductStock(product, stockBySize) {
+  const normalized = withNormalizedStock({ ...product, stockBySize });
+  persistLocalProductStock(normalized);
+  if (!isFirebaseConfigured) return normalized;
+  const id = product.id || product.slug;
+  if (!id) throw new Error("Product id is required.");
+  await setDoc(
+    doc(db, "products", id),
+    { stockBySize: normalized.stockBySize, stock: normalized.stock },
+    { merge: true }
+  );
+  return normalized;
 }
 
 export async function updateOrderStatus(id, status) {
@@ -130,15 +175,17 @@ export async function updateOrderStatus(id, status) {
 }
 
 export async function saveProduct(product) {
+  const normalized = withNormalizedStock(product);
+  persistLocalProductStock(normalized);
   if (!isFirebaseConfigured) {
-    throw new Error("Connect Firebase to save products.");
+    return normalized.id || normalized.slug;
   }
-  if (product.id) {
-    const { id, ...rest } = product;
+  if (normalized.id) {
+    const { id, ...rest } = normalized;
     await setDoc(doc(db, "products", id), rest, { merge: true });
     return id;
   }
-  const ref = await addDoc(collection(db, "products"), product);
+  const ref = await addDoc(collection(db, "products"), normalized);
   return ref.id;
 }
 
@@ -180,7 +227,14 @@ export async function seedDatabase() {
   );
 
   await Promise.all(
-    seedProducts.map((p) => setDoc(doc(db, "products", p.slug), p))
+    seedProducts.map(async (p) => {
+      const ref = doc(db, "products", p.slug);
+      const snap = await getDoc(ref);
+      const existing = snap.exists() ? snap.data() : {};
+      const keepStock =
+        existing.stockBySize && Object.keys(existing.stockBySize).length > 0;
+      await setDoc(ref, keepStock ? { ...p, stockBySize: existing.stockBySize, stock: existing.stock } : p);
+    })
   );
   await Promise.all(
     seedPortfolio.map((p) => setDoc(doc(db, "portfolio", p.slug), p))

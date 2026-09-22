@@ -9,6 +9,8 @@ import { createOrder } from "../lib/store";
 import { isFirebaseConfigured } from "../lib/firebase";
 import { createCheckoutSession, isStripeConfigured, isStripeDemoMode } from "../lib/stripe";
 import { PENDING_ORDER_KEY } from "./DemoPayment";
+import { inventoryErrorForCart } from "../lib/inventory";
+import { useCatalog } from "../context/CatalogContext";
 import Newsletter from "../components/Newsletter";
 import Reveal from "../components/Reveal";
 import Seo from "../components/Seo";
@@ -19,6 +21,7 @@ export default function Checkout() {
   const { currency, formatPrice, convertFromPln } = useCurrency();
   const { user, profile, saveProfile } = useAuth();
   const { t } = useLang();
+  const { products } = useCatalog();
   const nav = useNavigate();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -76,6 +79,11 @@ export default function Checkout() {
   const submit = async (e) => {
     e.preventDefault();
     if (!items.length || !commerceEnabled) return;
+    const stockError = inventoryErrorForCart(products, items);
+    if (stockError) {
+      setError(stockError);
+      return;
+    }
     setBusy(true);
     setError("");
     try {

@@ -9,6 +9,12 @@ import { useCurrency } from "../context/CurrencyContext";
 import { getColorVariants } from "../lib/catalogFilters";
 import { imgSrc } from "../lib/cloudinary";
 import {
+  firstInStockSize,
+  isProductInStock,
+  isSizeInStock,
+  stockForSize,
+} from "../lib/inventory";
+import {
   ACCESSORY_MEASUREMENTS,
   CARE_INSTRUCTIONS,
   DELIVERY_INFO,
@@ -103,9 +109,13 @@ export default function Product() {
     );
   }
 
-  const selectedSize = size || product.sizes?.[0];
-  const canPurchase =
+  const selectedSize = size || firstInStockSize(product);
+  const sizeAvailable = isSizeInStock(product, selectedSize);
+  const productInStock = isProductInStock(product);
+  const remaining = stockForSize(product, selectedSize);
+  const commerceOpen =
     commerceEnabled && product.status === "available" && product.price != null;
+  const canPurchase = commerceOpen && productInStock && sizeAvailable;
   const productId = product.id || product.slug;
   const wishlisted = has(productId);
   const description = lang === "pl" && product.descriptionPl ? product.descriptionPl : product.description;
@@ -115,7 +125,7 @@ export default function Product() {
   const delivery = DELIVERY_INFO[lang] || DELIVERY_INFO.en;
 
   const putInBag = () => {
-    if (!canPurchase || !selectedSize) return false;
+    if (!canPurchase || !selectedSize || !sizeAvailable) return false;
     add({
       productId,
       slug: product.slug,
@@ -234,6 +244,11 @@ export default function Product() {
             </div>
 
             <p className="mt-6 text-xl tabular-nums">{formatPrice(product.price)}</p>
+            {!productInStock && product.status === "available" && (
+              <p className="mt-2 text-[10px] tracking-[0.22em] uppercase text-crimson">
+                {t("product.outOfStock")}
+              </p>
+            )}
 
             {product.status === "preview" && (
               <p className="mt-2 text-[10px] tracking-[0.22em] uppercase text-midnight/45">
@@ -250,6 +265,7 @@ export default function Product() {
                 <div className="flex gap-3 flex-wrap">
                   {colorVariants.map((variant) => {
                     const active = variant.slug === product.slug;
+                    const oos = !isProductInStock(variant);
                     return (
                       <Link
                         key={variant.slug}
@@ -258,8 +274,8 @@ export default function Product() {
                           active
                             ? "border-midnight bg-midnight/5"
                             : "border-midnight/15 hover:border-midnight/35"
-                        }`}
-                        title={variant.color}
+                        } ${oos ? "opacity-50" : ""}`}
+                        title={oos ? `${variant.color} — out of stock` : variant.color}
                       >
                         <span
                           className="w-5 h-5 rounded-full border border-midnight/15 shrink-0"
@@ -285,31 +301,49 @@ export default function Product() {
                 </Link>
               </div>
               <div className="flex flex-wrap gap-2">
-                {product.sizes?.map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => setSize(s)}
-                    className={`min-w-[3rem] px-4 py-2.5 text-sm border transition-colors duration-300 ${
-                      selectedSize === s
-                        ? "bg-midnight text-porcelain border-midnight"
-                        : "border-midnight/20 hover:border-midnight/45"
-                    }`}
-                  >
-                    {s}
-                  </button>
-                ))}
+                {product.sizes?.map((s) => {
+                  const available = isSizeInStock(product, s);
+                  return (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => available && setSize(s)}
+                      disabled={!available}
+                      title={available ? s : `${s} — ${t("product.sizeOutOfStock")}`}
+                      aria-label={available ? s : `${s}, ${t("product.sizeOutOfStock")}`}
+                      className={`min-w-[3rem] px-4 py-2.5 text-sm border transition-colors duration-300 ${
+                        !available
+                          ? "border-midnight/10 text-midnight/30 line-through cursor-not-allowed"
+                          : selectedSize === s
+                            ? "bg-midnight text-porcelain border-midnight"
+                            : "border-midnight/20 hover:border-midnight/45"
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  );
+                })}
               </div>
+              {selectedSize && !sizeAvailable && (
+                <p className="mt-3 text-[10px] tracking-[0.18em] uppercase text-crimson">
+                  {t("product.sizeOutOfStock")}
+                </p>
+              )}
+              {sizeAvailable && remaining > 0 && remaining <= 3 && (
+                <p className="mt-3 text-[10px] tracking-[0.18em] uppercase text-midnight/45">
+                  {t("product.lowStock")} · {remaining}
+                </p>
+              )}
             </div>
 
             {/* Purchase CTA */}
             <div className="mt-12">
-              {canPurchase ? (
+              {commerceOpen && productInStock ? (
                 <div className="space-y-3">
                   <button
                     type="button"
                     onClick={buyNow}
-                    disabled={!selectedSize}
+                    disabled={!selectedSize || !sizeAvailable}
                     className="w-full bg-crimson text-porcelain py-4 text-[11px] tracking-[0.3em] uppercase hover:bg-midnight transition-colors duration-500 disabled:opacity-40"
                   >
                     {t("product.buyNow", "Buy now")}
@@ -317,13 +351,26 @@ export default function Product() {
                   <button
                     type="button"
                     onClick={addToBag}
-                    disabled={!selectedSize}
+                    disabled={!selectedSize || !sizeAvailable}
                     className="w-full border border-midnight/25 text-midnight py-4 text-[11px] tracking-[0.3em] uppercase hover:border-midnight hover:bg-midnight hover:text-porcelain transition-colors duration-500 disabled:opacity-40"
                   >
                     {added ? t("product.added", "Added to bag") : t("product.addToBag")}
                   </button>
                   <p className="pt-1 text-[10px] tracking-[0.18em] uppercase text-midnight/40 text-center">
                     {t("product.shippingNote", "Free delivery over 500 zł · 30-day returns")}
+                  </p>
+                </div>
+              ) : commerceOpen && !productInStock ? (
+                <div className="space-y-3">
+                  <button
+                    type="button"
+                    disabled
+                    className="w-full bg-midnight/20 text-midnight/50 py-4 text-[11px] tracking-[0.3em] uppercase cursor-not-allowed"
+                  >
+                    {t("product.outOfStock")}
+                  </button>
+                  <p className="text-xs text-midnight/45 text-center">
+                    {t("product.outOfStockCopy")}
                   </p>
                 </div>
               ) : (
@@ -512,12 +559,12 @@ export default function Product() {
             <p className="font-serif text-lg truncate">{product.name}</p>
             <p className="text-sm tabular-nums text-midnight/60">{formatPrice(product.price)}</p>
           </div>
-          {canPurchase ? (
+          {commerceOpen && productInStock ? (
             <>
               <button
                 type="button"
                 onClick={addToBag}
-                disabled={!selectedSize}
+                disabled={!selectedSize || !sizeAvailable}
                 className="shrink-0 border border-midnight/25 px-4 py-3.5 text-[10px] tracking-[0.2em] uppercase hover:border-midnight transition-colors disabled:opacity-40"
               >
                 {added ? t("product.added", "Added to bag") : t("product.bag", "Bag")}
@@ -525,12 +572,16 @@ export default function Product() {
               <button
                 type="button"
                 onClick={buyNow}
-                disabled={!selectedSize}
+                disabled={!selectedSize || !sizeAvailable}
                 className="shrink-0 bg-crimson text-porcelain px-5 py-3.5 text-[10px] tracking-[0.2em] uppercase hover:bg-midnight transition-colors disabled:opacity-40"
               >
                 {t("product.buyNow", "Buy now")}
               </button>
             </>
+          ) : commerceOpen && !productInStock ? (
+            <span className="shrink-0 text-[10px] tracking-[0.2em] uppercase text-crimson">
+              {t("product.outOfStock")}
+            </span>
           ) : (
             <button
               type="button"

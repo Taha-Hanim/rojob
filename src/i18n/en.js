@@ -127,6 +127,10 @@ export default {
     madeIn: "Made in Bangladesh",
     new: "New",
     collectionCode: "01/26",
+    outOfStock: "Out of stock",
+    sizeOutOfStock: "This size is out of stock",
+    outOfStockCopy: "This colourway is sold out. Choose another colour if one is listed.",
+    lowStock: "Low stock",
   },
   cart: {
     title: "Bag",

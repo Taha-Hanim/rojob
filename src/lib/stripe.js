@@ -39,3 +39,11 @@ export const DEMO_CARD = {
   postcode: "00-001",
   country: "Poland",
 };
+
+/** Stripe's published decline card. Demo pay rejects this and leaves stock untouched. */
+export const DEMO_DECLINE_CARD = "4000 0000 0000 0002";
+
+export function demoCardApproved(number) {
+  const digits = String(number || "").replace(/\s+/g, "");
+  return digits === DEMO_CARD.number.replace(/\s+/g, "");
+}

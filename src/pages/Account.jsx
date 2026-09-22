@@ -22,6 +22,7 @@ export default function Account() {
     profile,
     configured,
     ready,
+    isAdmin,
     login,
     register,
     logout,
@@ -153,6 +154,18 @@ export default function Account() {
           <p className="text-[11px] tracking-[0.35em] uppercase text-crimson">{t("nav.account")}</p>
           <h1 className="font-serif text-6xl md:text-7xl mt-3">{t("account.title")}</h1>
           <p className="mt-5 text-midnight/70 max-w-lg">{t("account.intro")}</p>
+          {isAdmin && (
+            <Link
+              to="/admin/inventory"
+              className="mt-10 flex flex-col gap-2 max-w-md border border-midnight/15 bg-white/50 px-6 py-5 hover:border-midnight/40 transition-colors"
+            >
+              <span className="text-[10px] tracking-[0.28em] uppercase text-crimson">Atelier</span>
+              <span className="font-serif text-3xl">Inventory</span>
+              <span className="text-sm text-midnight/60">
+                Track remaining pieces by product and size.
+              </span>
+            </Link>
+          )}
         </Reveal>
 
         {!configured && (

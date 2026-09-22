@@ -127,6 +127,10 @@ export default {
     madeIn: "Wyprodukowano w Bangladeszu",
     new: "Nowość",
     collectionCode: "01/26",
+    outOfStock: "Brak w magazynie",
+    sizeOutOfStock: "Ten rozmiar jest niedostępny",
+    outOfStockCopy: "Ten kolor jest wyprzedany. Wybierz inny, jeśli jest dostępny.",
+    lowStock: "Ostatnie sztuki",
   },
   cart: {
     title: "Torba",

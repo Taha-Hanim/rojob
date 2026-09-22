@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useLang } from "../context/LangContext";
 import { useUI } from "../context/UIContext";
+import { useAuth } from "../context/AuthContext";
 
 const links = [
   { labelKey: "nav.shop", to: "/shop" },
@@ -39,6 +40,7 @@ function LangToggle({ className = "", light = false }) {
 export default function MenuOverlay() {
   const { menuOpen, setMenuOpen } = useUI();
   const { t } = useLang();
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -86,6 +88,17 @@ export default function MenuOverlay() {
               </Link>
             </li>
           ))}
+          {isAdmin && (
+            <li>
+              <Link
+                to="/admin/inventory"
+                onClick={() => setMenuOpen(false)}
+                className="font-serif text-3xl md:text-4xl text-midnight/90 hover:text-crimson transition-colors duration-300"
+              >
+                Inventory
+              </Link>
+            </li>
+          )}
         </ul>
 
         <div className="px-6 py-6 border-t border-midnight/8 flex items-center justify-between">

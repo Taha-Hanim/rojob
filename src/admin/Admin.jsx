@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { isCloudinaryConfigured, uploadToCloudinary } from "../lib/cloudinary";
 import {
@@ -13,6 +13,16 @@ import {
   updateOrderStatus,
   seedDatabase,
 } from "../lib/store";
+import Inventory from "./Inventory";
+import { stockMap } from "../lib/inventory";
+
+const TABS = [
+  { id: "inventory", label: "Inventory" },
+  { id: "orders", label: "Orders" },
+  { id: "products", label: "Products" },
+  { id: "portfolio", label: "Portfolio" },
+  { id: "setup", label: "Setup" },
+];
 
 const emptyProduct = () => ({
   slug: "",
@@ -34,6 +44,7 @@ const emptyProduct = () => ({
   images: { front: "", hover: "", gallery: [] },
   featured: false,
   stock: 25,
+  stockBySize: { XS: 5, S: 5, M: 5, L: 5, XL: 5 },
   status: "available",
   sku: "",
   designedIn: "Warsaw",
@@ -46,7 +57,9 @@ export default function Admin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
-  const [tab, setTab] = useState("orders");
+  const { pathname } = useLocation();
+  const tabParam = pathname.replace(/^\/admin\/?/, "") || "inventory";
+  const tab = TABS.some((item) => item.id === tabParam) ? tabParam : "inventory";
   const [products, setProducts] = useState([]);
   const [portfolio, setPortfolio] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -77,7 +90,7 @@ export default function Admin() {
   if (!configured) {
     return (
       <div className="max-w-lg mx-auto px-5 py-20">
-        <h1 className="font-serif text-4xl">Admin</h1>
+        <h1 className="font-serif text-4xl">Atelier</h1>
         <p className="mt-4 text-midnight/70 leading-relaxed">
           Add Firebase keys to <code className="bg-white/60 px-1">.env.local</code> to unlock
           the live admin. Until then the public site runs on seed data in pre-launch mode.
@@ -103,7 +116,8 @@ export default function Admin() {
           }
         }}
       >
-        <h1 className="font-serif text-4xl">Admin</h1>
+        <h1 className="font-serif text-4xl">Atelier</h1>
+        <p className="text-sm text-midnight/55">Sign in to open inventory, orders and the catalogue.</p>
         <input
           className="w-full border-b border-midnight/20 py-2 bg-transparent"
           placeholder="Email"
@@ -131,7 +145,7 @@ export default function Admin() {
   if (!isAdmin) {
     return (
       <div className="max-w-lg mx-auto px-5 py-20">
-        <h1 className="font-serif text-4xl">Admin</h1>
+        <h1 className="font-serif text-4xl">Atelier</h1>
         <p className="mt-4 text-midnight/70 leading-relaxed">
           This account does not have admin access. Sign in with an admin email, or use your
           customer account on the main site.
@@ -155,7 +169,7 @@ export default function Admin() {
   return (
     <div className="max-w-6xl mx-auto px-5 py-10 min-h-screen bg-porcelain">
       <div className="flex justify-between items-center">
-        <h1 className="font-serif text-4xl">Admin</h1>
+        <h1 className="font-serif text-4xl">Atelier</h1>
         <button
           type="button"
           onClick={logout}
@@ -167,16 +181,19 @@ export default function Admin() {
       <p className="text-sm text-midnight/50 mt-1">{user.email}</p>
       {msg && <p className="mt-3 text-sm text-midnight/70">{msg}</p>}
 
-      <div className="flex gap-4 mt-8 text-[11px] tracking-[0.2em] uppercase flex-wrap">
-        {["orders", "products", "portfolio", "setup"].map((t) => (
-          <button
-            key={t}
-            type="button"
-            onClick={() => setTab(t)}
-            className={tab === t ? "text-crimson" : "text-midnight/50"}
+      <div className="flex gap-6 mt-8 text-[11px] tracking-[0.2em] uppercase flex-wrap border-b border-midnight/10">
+        {TABS.map((item) => (
+          <Link
+            key={item.id}
+            to={`/admin/${item.id}`}
+            className={`pb-3 -mb-px border-b ${
+              tab === item.id
+                ? "text-crimson border-crimson"
+                : "text-midnight/45 border-transparent hover:text-midnight"
+            }`}
           >
-            {t}
-          </button>
+            {item.label}
+          </Link>
         ))}
       </div>
 
@@ -209,6 +226,8 @@ export default function Admin() {
           </p>
         </div>
       )}
+
+      {tab === "inventory" && <Inventory products={products} />}
 
       {tab === "orders" && (
         <div className="mt-8 overflow-x-auto">
@@ -279,7 +298,9 @@ export default function Admin() {
                   }
                 >
                   {p.name} · {p.color}
-                  <span className="text-midnight/40 text-xs ml-2">{p.status}</span>
+                  <span className="text-midnight/40 text-xs ml-2">
+                    {p.status} · {Object.values(p.stockBySize || {}).reduce((n, v) => n + Number(v || 0), p.stock || 0)} pcs
+                  </span>
                 </button>
                 <button
                   type="button"
@@ -424,7 +445,28 @@ function ProductForm({ product, setProduct, onSave }) {
       <input className="w-full border-b py-2 bg-transparent" placeholder="Colour id" value={product.colorId} onChange={(e) => set("colorId", e.target.value)} />
       <input className="w-full border-b py-2 bg-transparent" placeholder="Colour hex" value={product.colorHex} onChange={(e) => set("colorHex", e.target.value)} />
       <input className="w-full border-b py-2 bg-transparent" placeholder="Price (empty = —)" value={product.price ?? ""} onChange={(e) => set("price", e.target.value === "" ? null : e.target.value)} />
-      <input className="w-full border-b py-2 bg-transparent" placeholder="Stock" type="number" value={product.stock} onChange={(e) => set("stock", e.target.value)} />
+      <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
+        {(product.sizes?.length ? product.sizes : ["One size"]).map((size) => (
+          <label key={size} className="block text-[10px] tracking-[0.16em] uppercase text-midnight/45">
+            {size}
+            <input
+              type="number"
+              min="0"
+              className="mt-1 w-full border-b py-2 bg-transparent text-sm normal-case tracking-normal"
+              value={stockMap(product)[size] ?? 0}
+              onChange={(e) =>
+                setProduct({
+                  ...product,
+                  stockBySize: {
+                    ...stockMap(product),
+                    [size]: Math.max(0, Math.floor(Number(e.target.value) || 0)),
+                  },
+                })
+              }
+            />
+          </label>
+        ))}
+      </div>
       <select className="w-full border-b py-2 bg-transparent" value={product.status} onChange={(e) => set("status", e.target.value)}>
         <option value="preview">preview</option>
         <option value="available">available</option>

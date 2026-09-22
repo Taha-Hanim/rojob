@@ -1,17 +1,21 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useCatalog } from "../context/CatalogContext";
 import { useLang } from "../context/LangContext";
 import { useSiteMode } from "../context/SiteModeContext";
 import { useCurrency } from "../context/CurrencyContext";
 import { imgSrc } from "../lib/cloudinary";
+import { availableForLine, inventoryErrorForCart } from "../lib/inventory";
 import Reveal from "../components/Reveal";
 import Seo from "../components/Seo";
 
 export default function Cart() {
   const { items, setQty, remove, total } = useCart();
+  const { products } = useCatalog();
   const { t } = useLang();
   const { commerceEnabled } = useSiteMode();
   const { formatPrice } = useCurrency();
+  const stockError = inventoryErrorForCart(products, items);
 
   if (!items.length) {
     return (
@@ -44,7 +48,11 @@ export default function Cart() {
         </Reveal>
 
         <ul className="mt-12 md:mt-16 divide-y divide-midnight/8">
-          {items.map((line) => (
+          {items.map((line) => {
+            const available = availableForLine(products, line);
+            const oos = available === 0;
+            const atCap = available != null && line.qty >= available;
+            return (
             <Reveal key={line.lineId} as="li" className="py-8 flex gap-5 md:gap-8">
               <div className="w-24 md:w-28 h-32 md:h-36 shrink-0 overflow-hidden bg-white/30">
                 {line.image && (
@@ -57,6 +65,11 @@ export default function Cart() {
                   <p className="text-[11px] tracking-[0.15em] uppercase text-midnight/50 mt-2">
                     {line.color || line.colorName} · {line.size}
                   </p>
+                  {oos && (
+                    <p className="mt-2 text-[10px] tracking-[0.16em] uppercase text-crimson">
+                      {t("product.outOfStock")}
+                    </p>
+                  )}
                 </div>
                 <div className="mt-4 flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
@@ -72,7 +85,8 @@ export default function Cart() {
                     <button
                       type="button"
                       onClick={() => setQty(line.lineId, line.qty + 1)}
-                      className="w-8 h-8 border border-midnight/15 hover:border-midnight/40 transition-colors text-sm"
+                      disabled={atCap}
+                      className="w-8 h-8 border border-midnight/15 hover:border-midnight/40 transition-colors text-sm disabled:opacity-30"
                       aria-label="Increase quantity"
                     >
                       +
@@ -91,7 +105,8 @@ export default function Cart() {
                 </div>
               </div>
             </Reveal>
-          ))}
+            );
+          })}
         </ul>
 
         <Reveal className="mt-12 pt-10 border-t border-midnight/10 flex flex-col md:flex-row md:items-end md:justify-between gap-8">
@@ -102,12 +117,18 @@ export default function Cart() {
             <p className="text-[10px] tracking-[0.2em] uppercase text-midnight/45">{t("cart.subtotal")}</p>
             <p className="font-serif text-3xl md:text-4xl mt-2 tabular-nums">{formatPrice(total || null)}</p>
             {commerceEnabled ? (
+              stockError ? (
+                <p className="mt-6 text-[11px] tracking-[0.16em] uppercase text-crimson max-w-xs ml-auto">
+                  {stockError}
+                </p>
+              ) : (
               <Link
                 to="/checkout"
                 className="mt-6 inline-block bg-midnight text-porcelain px-12 py-4 text-[11px] tracking-[0.28em] uppercase hover:bg-crimson transition-colors duration-500"
               >
                 {t("cart.checkout")}
               </Link>
+              )
             ) : (
               <p className="mt-6 text-[11px] tracking-[0.2em] uppercase text-midnight/45">
                 {t("home.hero.ctaPrivate")}

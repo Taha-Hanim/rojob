@@ -4,7 +4,9 @@ import { useCart } from "../context/CartContext";
 import { useCurrency } from "../context/CurrencyContext";
 import { useAuth } from "../context/AuthContext";
 import { createOrder } from "../lib/store";
-import { DEMO_CARD } from "../lib/stripe";
+import { DEMO_CARD, demoCardApproved } from "../lib/stripe";
+import { inventoryErrorForCart } from "../lib/inventory";
+import { useCatalog } from "../context/CatalogContext";
 import Seo from "../components/Seo";
 
 export const PENDING_ORDER_KEY = "rojob_pending_order";
@@ -28,6 +30,7 @@ export default function DemoPayment() {
   const nav = useNavigate();
   const { state } = useLocation();
   const { clear } = useCart();
+  const { products } = useCatalog();
   const { formatPrice } = useCurrency();
   const { user } = useAuth();
 
@@ -53,11 +56,23 @@ export default function DemoPayment() {
 
   const pay = async (e) => {
     e.preventDefault();
+    const stockError = inventoryErrorForCart(products, items);
+    if (stockError) {
+      setError(stockError);
+      return;
+    }
+
     setBusy(true);
     setError("");
 
     // Simulated authorisation delay so the screen behaves like the real thing.
     await new Promise((r) => setTimeout(r, 1400));
+
+    if (!demoCardApproved(card)) {
+      setError("Your card was declined. The order was not placed and stock is unchanged.");
+      setBusy(false);
+      return;
+    }
 
     try {
       await createOrder({
@@ -241,7 +256,8 @@ export default function DemoPayment() {
 
             <p className="pt-2 text-center text-[12px] leading-relaxed text-[#6d6e78]">
               This is a demonstration screen. It mimics Stripe Checkout so the flow can be
-              reviewed, but no payment is taken and no card details are sent anywhere.
+              reviewed, but no payment is taken and no card details are sent anywhere. Use
+              4242 4242 4242 4242 to complete a sale, or 4000 0000 0000 0002 to decline it.
             </p>
 
             <Link

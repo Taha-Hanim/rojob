@@ -1,3 +1,5 @@
+import { isProductInStock } from "./inventory";
+
 export const COLLECTIONS = [
   {
     slug: "cable-cotton",
@@ -109,14 +111,18 @@ export function dedupeByProduct(products) {
     else groups.set(key, [p]);
   }
 
-  return [...groups.values()].map((variants) => ({
-    ...variants[0],
-    colorOptions: variants.map((v) => ({
-      slug: v.slug || v.id,
-      color: v.color,
-      colorId: v.colorId,
-      colorHex: v.colorHex,
-      image: v.images?.front,
-    })),
-  }));
+  return [...groups.values()].map((variants) => {
+    const primary = variants.find((v) => isProductInStock(v)) || variants[0];
+    return {
+      ...primary,
+      colorOptions: variants.map((v) => ({
+        slug: v.slug || v.id,
+        color: v.color,
+        colorId: v.colorId,
+        colorHex: v.colorHex,
+        image: v.images?.front,
+        inStock: isProductInStock(v),
+      })),
+    };
+  });
 }

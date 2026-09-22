@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import { CatalogProvider } from "./context/CatalogContext";
@@ -70,6 +70,8 @@ function Shell() {
           <Route path="/company" element={<Legal type="company" />} />
           <Route path="/wholesale" element={<Wholesale />} />
           <Route path="/about" element={<About />} />
+          <Route path="/inventory" element={<Navigate to="/admin/inventory" replace />} />
+          <Route path="/admin/:tab" element={<Admin />} />
           <Route path="/admin" element={<Admin />} />
         </Routes>
       </main>

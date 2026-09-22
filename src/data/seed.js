@@ -24,6 +24,13 @@ function product({
   price,
   sku,
 }) {
+  const stockBySize = Object.fromEntries(
+    (sizes?.length ? sizes : ["One size"]).map((size, i, list) => {
+      const each = Math.floor(Number(stock || 0) / list.length);
+      const extra = Number(stock || 0) - each * list.length;
+      return [size, each + (i === 0 ? extra : 0)];
+    })
+  );
   return {
     slug,
     name,
@@ -44,6 +51,7 @@ function product({
     images: { front, hover, gallery },
     featured,
     stock,
+    stockBySize,
     status,
     sku,
     designedIn: "Warsaw",
