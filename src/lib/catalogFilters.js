@@ -93,3 +93,30 @@ export function getColorVariants(products, product) {
   if (!product?.name) return [];
   return products.filter((p) => p.name === product.name);
 }
+
+/**
+ * One card per product. Colourways of the same piece collapse into the first
+ * entry of the incoming order, so call this after filtering and sorting.
+ * The survivor carries `colorOptions` so cards can show the full swatch set.
+ */
+export function dedupeByProduct(products) {
+  const groups = new Map();
+
+  for (const p of products) {
+    const key = p.name || p.slug || p.id;
+    const group = groups.get(key);
+    if (group) group.push(p);
+    else groups.set(key, [p]);
+  }
+
+  return [...groups.values()].map((variants) => ({
+    ...variants[0],
+    colorOptions: variants.map((v) => ({
+      slug: v.slug || v.id,
+      color: v.color,
+      colorId: v.colorId,
+      colorHex: v.colorHex,
+      image: v.images?.front,
+    })),
+  }));
+}

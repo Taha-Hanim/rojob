@@ -7,8 +7,11 @@ export default function ProductCard({ product, index = 0 }) {
   const { t } = useLang();
   const { formatPrice } = useCurrency();
   const front = product.images?.front;
-  const hover = product.images?.hover;
   const slug = product.slug || product.id;
+  const colorOptions = product.colorOptions || [];
+  // Hovering reveals the next colourway. Pieces with a single colourway get
+  // the subtle zoom instead of an unrelated styling shot.
+  const hover = colorOptions.find((c) => c.slug !== slug && c.image)?.image;
 
   const label =
     product.status === "preview"
@@ -50,11 +53,22 @@ export default function ProductCard({ product, index = 0 }) {
       <div className="mt-4 flex justify-between gap-4 items-baseline">
         <div className="min-w-0">
           <h3 className="font-serif text-xl md:text-2xl truncate">{product.name}</h3>
-          {product.color && (
+          {colorOptions.length > 1 ? (
+            <span className="mt-2 flex items-center gap-1.5">
+              {colorOptions.map((c) => (
+                <span
+                  key={c.slug}
+                  title={c.color}
+                  className="w-3 h-3 rounded-full border border-midnight/20"
+                  style={{ background: c.colorHex }}
+                />
+              ))}
+            </span>
+          ) : product.color ? (
             <p className="text-[10px] tracking-[0.2em] uppercase text-midnight/45 mt-1 truncate">
               {product.color}
             </p>
-          )}
+          ) : null}
         </div>
         <p className="text-sm shrink-0 tabular-nums">{formatPrice(product.price)}</p>
       </div>

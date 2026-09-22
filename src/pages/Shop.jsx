@@ -6,7 +6,12 @@ import ProductCard from "../components/ProductCard";
 import ProductFilters from "../components/ProductFilters";
 import Reveal from "../components/Reveal";
 import Seo from "../components/Seo";
-import { filterProducts, getCategories, sortProducts } from "../lib/catalogFilters";
+import {
+  dedupeByProduct,
+  filterProducts,
+  getCategories,
+  sortProducts,
+} from "../lib/catalogFilters";
 
 export default function Shop() {
   const { products, loading } = useCatalog();
@@ -22,7 +27,7 @@ export default function Shop() {
 
   const list = useMemo(() => {
     const filtered = filterProducts(products, { category, colorId, size, availability });
-    return sortProducts(filtered, sort);
+    return dedupeByProduct(sortProducts(filtered, sort));
   }, [products, category, colorId, size, availability, sort]);
 
   return (

@@ -13,12 +13,23 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { db, isFirebaseConfigured } from "./firebase";
-import { seedProducts, seedPortfolio, seedJournal } from "../data/seed";
+import {
+  seedProducts,
+  seedPortfolio,
+  seedJournal,
+  retiredProductSlugs,
+} from "../data/seed";
 
 export { seedJournal };
 
+const RETIRED_PRODUCTS = new Set(retiredProductSlugs);
+
 function withIds(snapshot) {
   return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+}
+
+function dropRetired(rows) {
+  return rows.filter((p) => !RETIRED_PRODUCTS.has(p.slug || p.id));
 }
 
 /** Keep local seed commerce fields when Firestore still has preview / empty prices */
@@ -47,7 +58,7 @@ export async function fetchProductsOnce() {
   if (!isFirebaseConfigured) return seedProducts.map((p) => ({ ...p, id: p.slug }));
   const snap = await getDocs(collection(db, "products"));
   if (snap.empty) return seedProducts.map((p) => ({ ...p, id: p.slug }));
-  return mergeSeedCommerce(withIds(snap));
+  return mergeSeedCommerce(dropRetired(withIds(snap)));
 }
 
 export function subscribeProducts(cb) {
@@ -57,7 +68,7 @@ export function subscribeProducts(cb) {
   }
   return onSnapshot(collection(db, "products"), (snap) => {
     if (snap.empty) cb(seedProducts.map((p) => ({ ...p, id: p.slug })));
-    else cb(mergeSeedCommerce(withIds(snap)));
+    else cb(mergeSeedCommerce(dropRetired(withIds(snap))));
   });
 }
 
@@ -158,6 +169,16 @@ export async function seedDatabase() {
   if (!isFirebaseConfigured) {
     throw new Error("Add your Firebase keys to .env.local first.");
   }
+  // Drop catalogue entries the seed no longer lists, so retiring a colourway
+  // here actually removes it from the live shop instead of leaving it behind.
+  const existing = await getDocs(collection(db, "products"));
+  const keep = new Set(seedProducts.map((p) => p.slug));
+  await Promise.all(
+    existing.docs
+      .filter((d) => !keep.has(d.data()?.slug || d.id))
+      .map((d) => deleteDoc(d.ref))
+  );
+
   await Promise.all(
     seedProducts.map((p) => setDoc(doc(db, "products", p.slug), p))
   );

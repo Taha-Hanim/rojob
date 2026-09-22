@@ -7,6 +7,7 @@ import ProductFilters from "../components/ProductFilters";
 import Seo from "../components/Seo";
 import Reveal from "../components/Reveal";
 import {
+  dedupeByProduct,
   filterProducts,
   getCategories,
   getCollectionProducts,
@@ -33,9 +34,11 @@ export default function Collection() {
 
   const list = useMemo(
     () =>
-      sortProducts(
-        filterProducts(collectionItems, { category, colorId, size, availability }),
-        sort
+      dedupeByProduct(
+        sortProducts(
+          filterProducts(collectionItems, { category, colorId, size, availability }),
+          sort
+        )
       ),
     [collectionItems, category, colorId, size, availability, sort]
   );

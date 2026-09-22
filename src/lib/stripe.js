@@ -19,3 +19,23 @@ export async function verifyCheckoutSession(sessionId) {
 export function isStripeConfigured() {
   return Boolean(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 }
+
+/**
+ * Demo mode renders a local Stripe-style payment screen instead of calling
+ * Stripe. No card is charged and no Stripe account is needed. Set
+ * VITE_STRIPE_DEMO=false once real keys are in place to use live Checkout.
+ */
+export function isStripeDemoMode() {
+  const flag = import.meta.env.VITE_STRIPE_DEMO;
+  return String(flag ?? "true").toLowerCase() !== "false";
+}
+
+/** Stripe's published test card, safe to show on a demo screen. */
+export const DEMO_CARD = {
+  number: "4242 4242 4242 4242",
+  expiry: "12 / 34",
+  cvc: "123",
+  name: "Jan Kowalski",
+  postcode: "00-001",
+  country: "Poland",
+};

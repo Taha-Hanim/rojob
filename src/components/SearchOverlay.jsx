@@ -4,6 +4,7 @@ import { useCatalog } from "../context/CatalogContext";
 import { useLang } from "../context/LangContext";
 import { useSiteMode } from "../context/SiteModeContext";
 import { useUI } from "../context/UIContext";
+import { dedupeByProduct } from "../lib/catalogFilters";
 
 const journalEntries = [
   { slug: "warsaw-light", titleKey: "journal.categories.warsaw", href: "/journal/warsaw-light" },
@@ -40,7 +41,9 @@ export default function SearchOverlay() {
   const results = useMemo(() => {
     if (!q) return { products: [], collections: [], journal: [] };
 
-    const productHits = products.filter((p) => p.name?.toLowerCase().includes(q)).slice(0, 6);
+    const productHits = dedupeByProduct(
+      products.filter((p) => p.name?.toLowerCase().includes(q))
+    ).slice(0, 6);
 
     const catalogCollections = [
       ...new Set(products.map((p) => p.collection).filter(Boolean)),

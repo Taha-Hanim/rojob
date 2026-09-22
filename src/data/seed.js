@@ -52,6 +52,13 @@ function product({
   };
 }
 
+/**
+ * Slugs pulled from the catalogue. Filtered out when reading Firestore and
+ * deleted on the next reseed, so retiring a piece here is enough to remove it
+ * from the shop without touching the database by hand.
+ */
+export const retiredProductSlugs = ["cable-vest-midnight"];
+
 export const seedProducts = [
   product({
     slug: "cable-half-zip-porcelain",
@@ -136,34 +143,6 @@ export const seedProducts = [
     stock: 25,
     status: "available",
     sku: "ROJ-VST-POR-001",
-  }),
-  product({
-    slug: "cable-vest-midnight",
-    name: "Cable Vest",
-    namePl: "Cable Vest",
-    color: "Midnight",
-    colorId: "midnight",
-    colorHex: "#0D1A2F",
-    category: "Knitwear",
-    description:
-      "A sleeveless cable-knit vest cut for everyday structure. V-neck, embroidered 52°N emblem, and a weight that holds its shape without stiffness.",
-    descriptionPl:
-      "Bezrękawnik ze splotem w warkocz, skrojony na codzienną strukturę. Dekolt w serek, haftowany emblemat 52°N i gramatura, która trzyma formę bez sztywności.",
-    details: [
-      "Classic cable knit",
-      "Premium 52°N embroidery",
-      "Branded neck tape",
-      "V-neck construction",
-    ],
-    sizes: ["XS", "S", "M", "L", "XL"],
-    front: "/images/cable-vest-midnight.jpg",
-    hover: "/images/detail-knit.jpg",
-    gallery: ["/images/cable-vest-midnight.jpg"],
-    featured: true,
-    price: 690,
-    stock: 25,
-    status: "available",
-    sku: "ROJ-VST-MID-001",
   }),
   product({
     slug: "stripe-vest-porcelain",

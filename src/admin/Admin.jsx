@@ -77,7 +77,7 @@ export default function Admin() {
   if (!configured) {
     return (
       <div className="max-w-lg mx-auto px-5 py-20">
-        <h1 className="font-serif text-4xl">Atelier</h1>
+        <h1 className="font-serif text-4xl">Admin</h1>
         <p className="mt-4 text-midnight/70 leading-relaxed">
           Add Firebase keys to <code className="bg-white/60 px-1">.env.local</code> to unlock
           the live admin. Until then the public site runs on seed data in pre-launch mode.
@@ -103,7 +103,7 @@ export default function Admin() {
           }
         }}
       >
-        <h1 className="font-serif text-4xl">Atelier</h1>
+        <h1 className="font-serif text-4xl">Admin</h1>
         <input
           className="w-full border-b border-midnight/20 py-2 bg-transparent"
           placeholder="Email"
@@ -131,9 +131,9 @@ export default function Admin() {
   if (!isAdmin) {
     return (
       <div className="max-w-lg mx-auto px-5 py-20">
-        <h1 className="font-serif text-4xl">Atelier</h1>
+        <h1 className="font-serif text-4xl">Admin</h1>
         <p className="mt-4 text-midnight/70 leading-relaxed">
-          This account does not have atelier access. Sign in with an admin email, or use your
+          This account does not have admin access. Sign in with an admin email, or use your
           customer account on the main site.
         </p>
         <div className="mt-8 flex gap-6">
@@ -155,7 +155,7 @@ export default function Admin() {
   return (
     <div className="max-w-6xl mx-auto px-5 py-10 min-h-screen bg-porcelain">
       <div className="flex justify-between items-center">
-        <h1 className="font-serif text-4xl">Atelier</h1>
+        <h1 className="font-serif text-4xl">Admin</h1>
         <button
           type="button"
           onClick={logout}

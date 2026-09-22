@@ -1,7 +1,9 @@
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useCatalog } from "../context/CatalogContext";
 import { useLang } from "../context/LangContext";
 import { useSiteMode } from "../context/SiteModeContext";
+import { dedupeByProduct } from "../lib/catalogFilters";
 import Emblem52N from "../components/Emblem52N";
 import ProductCard from "../components/ProductCard";
 import Newsletter from "../components/Newsletter";
@@ -28,7 +30,7 @@ export default function Home() {
   const { isCommerce } = useSiteMode();
   const { products } = useCatalog();
 
-  const collectionProducts = products.length ? products : [];
+  const collectionProducts = useMemo(() => dedupeByProduct(products), [products]);
   const heroProductSlug = "cable-half-zip-porcelain";
 
   return (

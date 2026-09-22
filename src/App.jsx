@@ -18,6 +18,7 @@ import Collections from "./pages/Collections";
 import Collection from "./pages/Collection";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import DemoPayment from "./pages/DemoPayment";
 import OrderConfirmed from "./pages/OrderConfirmed";
 import About from "./pages/About";
 import World from "./pages/World";
@@ -34,12 +35,14 @@ import Admin from "./admin/Admin";
 function Shell() {
   const { pathname } = useLocation();
   const isAdmin = pathname.startsWith("/admin");
+  // The payment screen stands in for a Stripe-hosted page, so it carries no site chrome.
+  const bare = isAdmin || pathname === "/checkout/payment";
 
   return (
     <>
       <ScrollToTop />
-      {!isAdmin && <Header />}
-      <main className={!isAdmin ? "pt-0" : ""}>
+      {!bare && <Header />}
+      <main className={!bare ? "pt-0" : ""}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/shop" element={<Shop />} />
@@ -49,6 +52,7 @@ function Shell() {
           <Route path="/products/:slug" element={<Product />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/checkout/payment" element={<DemoPayment />} />
           <Route path="/order-confirmed" element={<OrderConfirmed />} />
           <Route path="/world" element={<World />} />
           <Route path="/52n" element={<FiftyTwoN />} />
@@ -69,7 +73,7 @@ function Shell() {
           <Route path="/admin" element={<Admin />} />
         </Routes>
       </main>
-      {!isAdmin && (
+      {!bare && (
         <>
           <Footer />
           <CookieBanner />

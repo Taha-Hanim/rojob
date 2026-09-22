@@ -7,7 +7,8 @@ import { useLang } from "../context/LangContext";
 import { useSiteMode } from "../context/SiteModeContext";
 import { createOrder } from "../lib/store";
 import { isFirebaseConfigured } from "../lib/firebase";
-import { createCheckoutSession, isStripeConfigured } from "../lib/stripe";
+import { createCheckoutSession, isStripeConfigured, isStripeDemoMode } from "../lib/stripe";
+import { PENDING_ORDER_KEY } from "./DemoPayment";
 import Newsletter from "../components/Newsletter";
 import Reveal from "../components/Reveal";
 import Seo from "../components/Seo";
@@ -32,11 +33,10 @@ export default function Checkout() {
     notes: "",
   });
 
+  const demoMode = isStripeDemoMode();
   const stripeReady = isStripeConfigured();
-  const canPay =
-    commerceEnabled &&
-    stripeReady &&
-    items.every((i) => i.price != null && Number(i.price) > 0);
+  const pricesValid = items.every((i) => i.price != null && Number(i.price) > 0);
+  const canPay = commerceEnabled && (demoMode || stripeReady) && pricesValid;
 
   useEffect(() => {
     if (!user && !profile) return;
@@ -85,6 +85,23 @@ export default function Checkout() {
         pricePln: i.price,
       }));
       const displayTotal = convertFromPln(total);
+
+      if (canPay && demoMode) {
+        await persistProfileFromCheckout().catch(() => {});
+        const pending = {
+          customer: form,
+          items,
+          total,
+          currency: currency || "PLN",
+        };
+        try {
+          sessionStorage.setItem(PENDING_ORDER_KEY, JSON.stringify(pending));
+        } catch {
+          /* location state still carries it */
+        }
+        nav("/checkout/payment", { state: pending });
+        return;
+      }
 
       if (canPay) {
         await persistProfileFromCheckout().catch(() => {});
@@ -214,12 +231,21 @@ export default function Checkout() {
               >
                 <span className="text-[11px] tracking-[0.15em] uppercase">Stripe · Card</span>
                 <span className="text-[10px] tracking-[0.18em] uppercase">
-                  {canPay ? "Ready" : stripeReady ? "Set product prices" : "Add Stripe keys"}
+                  {demoMode
+                    ? pricesValid
+                      ? "Test mode"
+                      : "Set product prices"
+                    : canPay
+                      ? "Ready"
+                      : stripeReady
+                        ? "Set product prices"
+                        : "Add Stripe keys"}
                 </span>
               </div>
               <p className="text-xs text-midnight/50 leading-relaxed">
-                Charged in {currency}. Catalogue prices are stored in PLN and converted for your
-                region (~4.3 PLN = 1 EUR).
+                {demoMode
+                  ? "Stripe is running in test mode. The next screen shows the payment page with a demo card filled in — nothing is charged."
+                  : `Charged in ${currency}. Catalogue prices are stored in PLN and converted for your region (~4.3 PLN = 1 EUR).`}
               </p>
             </div>
 
@@ -231,9 +257,11 @@ export default function Checkout() {
               className="mt-6 w-full bg-crimson text-porcelain py-4 text-[11px] tracking-[0.3em] uppercase hover:bg-midnight transition-colors duration-500 disabled:opacity-50"
             >
               {busy
-                ? "Redirecting…"
+                ? demoMode
+                  ? "Opening payment…"
+                  : "Redirecting…"
                 : canPay
-                  ? `Pay with Stripe · ${formatPrice(total || null)}`
+                  ? `Continue to payment · ${formatPrice(total || null)}`
                   : `Place order · ${formatPrice(total || null)}`}
             </button>
           </form>
