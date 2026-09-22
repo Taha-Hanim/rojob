@@ -41,7 +41,7 @@ export default {
       title: "Cable Cotton",
       code: "01 / 2026",
       copy:
-        "Klasyczne dzianiny. Współczesne życie. Osiem wariantów kolorystycznych w Porcelain i Midnight — sfotografowane jak domowy lookbook, prezentowane jak działający sklep.",
+        "Klasyczne dzianiny. Współczesne życie. Cable Cotton w Porcelain i Midnight — sfotografowane jak domowy lookbook, prezentowane jak działający sklep.",
       cta: "Zobacz kolekcję",
     },
     heroProduct: {

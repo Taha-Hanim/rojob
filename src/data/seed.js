@@ -67,7 +67,11 @@ function product({
  * deleted on the next reseed, so retiring a piece here is enough to remove it
  * from the shop without touching the database by hand.
  */
-export const retiredProductSlugs = ["cable-vest-midnight"];
+export const retiredProductSlugs = [
+  "cable-vest-midnight",
+  "stripe-vest-porcelain",
+  "stripe-vest-midnight",
+];
 
 export const seedProducts = [
   product({
@@ -156,64 +160,6 @@ export const seedProducts = [
     stock: 25,
     status: "available",
     sku: "ROJ-VST-POR-001",
-  }),
-  product({
-    slug: "stripe-vest-porcelain",
-    name: "Stripe-Trim Vest",
-    namePl: "Stripe-Trim Vest",
-    color: "Porcelain / Midnight trim",
-    colorId: "porcelain",
-    colorHex: "#F3EFE7",
-    category: "Knitwear",
-    description:
-      "Cable vest with contrasting trim at the collar and armholes. Two-tone discipline — Porcelain body with Midnight trim.",
-    descriptionPl:
-      "Kamizelka ze splotem w warkocz z kontrastowym wykończeniem przy dekolcie i ramionach. Dyscyplina dwóch tonów — korpus Porcelain z wykończeniem Midnight.",
-    details: [
-      "Contrast collar and armholes",
-      "52°N embroidery",
-      "V-neck cable construction",
-      "Branded neck tape",
-    ],
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    front: "/images/stripe-vest-porcelain.jpg",
-    hover: "/images/hero-editorial.jpg",
-    gallery: ["/images/stripe-vest-porcelain.jpg"],
-    featured: true,
-    price: 159,
-    compareAtPrice: 359,
-    stock: 25,
-    status: "available",
-    sku: "ROJ-SV-POR-001",
-  }),
-  product({
-    slug: "stripe-vest-midnight",
-    name: "Stripe-Trim Vest",
-    namePl: "Stripe-Trim Vest",
-    color: "Midnight / Porcelain trim",
-    colorId: "midnight",
-    colorHex: "#0D1A2F",
-    category: "Knitwear",
-    description:
-      "Cable vest with contrasting trim at the collar and armholes. Two-tone discipline — Midnight body with Porcelain trim.",
-    descriptionPl:
-      "Kamizelka ze splotem w warkocz z kontrastowym wykończeniem przy dekolcie i ramionach. Dyscyplina dwóch tonów — korpus Midnight z wykończeniem Porcelain.",
-    details: [
-      "Contrast collar and armholes",
-      "52°N embroidery",
-      "V-neck cable construction",
-      "Branded neck tape",
-    ],
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    front: "/images/stripe-vest-midnight.jpg",
-    hover: "/images/lookbook-street.jpg",
-    gallery: ["/images/stripe-vest-midnight.jpg"],
-    featured: true,
-    price: 159,
-    compareAtPrice: 359,
-    stock: 25,
-    status: "available",
-    sku: "ROJ-SV-MID-001",
   }),
   product({
     slug: "cable-beanie-porcelain",

@@ -41,7 +41,7 @@ export default {
       title: "Cable Cotton",
       code: "01 / 2026",
       copy:
-        "Classic knits. Modern life. Eight colourways in Porcelain and Midnight — photographed as a house lookbook, presented as a working shop.",
+        "Classic knits. Modern life. Cable Cotton in Porcelain and Midnight — photographed as a house lookbook, presented as a working shop.",
       cta: "Shop the collection",
     },
     heroProduct: {
