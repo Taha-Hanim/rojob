@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { authErrorMessage } from "../lib/authErrors";
 import { isCloudinaryConfigured, uploadToCloudinary } from "../lib/cloudinary";
 import {
   subscribeOrders,
@@ -14,10 +15,15 @@ import {
   seedDatabase,
 } from "../lib/store";
 import Inventory from "./Inventory";
+import SalesLedger from "./SalesLedger";
+import Scanner from "./Scanner";
 import { stockMap } from "../lib/inventory";
+import { SALES_SHEET_APP_SCRIPT } from "../data/salesSheetAppScript";
 
 const TABS = [
   { id: "inventory", label: "Inventory" },
+  { id: "scan", label: "Scan" },
+  { id: "sales", label: "Sales" },
   { id: "orders", label: "Orders" },
   { id: "products", label: "Products" },
   { id: "portfolio", label: "Portfolio" },
@@ -113,25 +119,42 @@ export default function Admin() {
           try {
             await login(email, password);
           } catch (ex) {
-            setErr(ex.message);
+            setErr(authErrorMessage(ex));
           }
         }}
       >
         <h1 className="font-serif text-4xl">Atelier</h1>
-        <p className="text-sm text-midnight/55">Sign in to open inventory, orders and the catalogue.</p>
-        <input
-          className="w-full border-b border-midnight/20 py-2 bg-transparent"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          className="w-full border-b border-midnight/20 py-2 bg-transparent"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <p className="text-sm text-midnight/55">
+          Sign in with the atelier email and password. The first field is the email
+          (ceo@rojob.eu), not the password.
+        </p>
+        <label className="block">
+          <span className="text-[10px] tracking-[0.2em] uppercase text-midnight/45">Email</span>
+          <input
+            type="email"
+            name="email"
+            autoComplete="username"
+            required
+            inputMode="email"
+            className="w-full border-b border-midnight/20 py-2 bg-transparent"
+            placeholder="ceo@rojob.eu"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </label>
+        <label className="block">
+          <span className="text-[10px] tracking-[0.2em] uppercase text-midnight/45">Password</span>
+          <input
+            type="password"
+            name="password"
+            autoComplete="current-password"
+            required
+            className="w-full border-b border-midnight/20 py-2 bg-transparent"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </label>
         {err && <p className="text-crimson text-sm">{err}</p>}
         <button
           type="submit"
@@ -225,10 +248,66 @@ export default function Admin() {
             Site mode is <code>VITE_SITE_MODE=commerce</code>. After changing seed prices or images,
             click Seed database to push them to Firestore.
           </p>
+          <p className="text-sm text-midnight/50">
+            Stock only drops on paid orders if products exist in Firestore and the latest
+            <code>firestore.rules</code> are published in Firebase Console → Firestore → Rules.
+            Seed once, then publish those rules so checkout can lower counts.
+          </p>
+
+          <div className="pt-8 border-t border-midnight/10 space-y-4">
+            <h3 className="font-serif text-2xl">Google Sheet</h3>
+            <p className="text-sm text-midnight/65 leading-relaxed">
+              Sales already save themselves in Firebase. Connect a Google Sheet if you want the
+              same ledger — barcodes included — to update in Drive after every paid order. You
+              never have to download a file.
+            </p>
+            <ol className="text-sm text-midnight/65 leading-relaxed list-decimal pl-5 space-y-2">
+              <li>Create a blank Google Sheet named ROJOB Sales.</li>
+              <li>Extensions → Apps Script. Delete any placeholder code and paste the script below.</li>
+              <li>
+                Project Settings → Script properties → add <code>ROJOB_SECRET</code> with a long
+                random value. Use that same value as <code>SALES_SHEET_SECRET</code> on Vercel.
+              </li>
+              <li>
+                Deploy → New deployment → type Web app. Execute as you. Who has access: Anyone.
+                Copy the web app URL.
+              </li>
+              <li>
+                In Vercel → Environment Variables add{" "}
+                <code>SALES_SHEET_WEBHOOK</code> (the web app URL) and{" "}
+                <code>SALES_SHEET_SECRET</code>, then redeploy.
+              </li>
+              <li>
+                In Atelier → Sales, click Refresh Google Sheet once to write barcodes and stock.
+                After that, every completed sale appends a row on its own.
+              </li>
+            </ol>
+            <button
+              type="button"
+              className="text-[10px] tracking-[0.22em] uppercase border border-midnight/20 px-5 py-2 hover:bg-midnight hover:text-porcelain transition-colors"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(SALES_SHEET_APP_SCRIPT);
+                  setMsg("Apps Script copied. Paste it into the Google Sheet.");
+                } catch {
+                  setMsg("Could not copy. Select the script below by hand.");
+                }
+              }}
+            >
+              Copy Apps Script
+            </button>
+            <pre className="text-[10px] leading-relaxed bg-white/60 border border-midnight/10 p-3 overflow-auto max-h-56 whitespace-pre-wrap">
+              {SALES_SHEET_APP_SCRIPT}
+            </pre>
+          </div>
         </div>
       )}
 
       {tab === "inventory" && <Inventory products={products} />}
+
+      {tab === "scan" && <Scanner products={products} />}
+
+      {tab === "sales" && <SalesLedger products={products} />}
 
       {tab === "orders" && (
         <div className="mt-8 overflow-x-auto">

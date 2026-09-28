@@ -8,6 +8,8 @@ function normalizeLine(entry) {
   return {
     productId: entry.productId,
     slug: entry.slug,
+    sku: entry.sku,
+    barcode: entry.barcode,
     name: entry.name,
     color: entry.color ?? entry.colorName ?? "",
     colorId: entry.colorId,

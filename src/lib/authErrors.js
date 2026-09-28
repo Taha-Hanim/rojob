@@ -12,7 +12,8 @@ const MESSAGES = {
       "Email or password is incorrect. If you have not created an account yet, use “Create account” below.",
     "auth/wrong-password": "That password is incorrect. Try again or reset it below.",
     "auth/user-not-found": "No account exists for this email. Use “Create account” below.",
-    "auth/invalid-email": "That email address does not look valid.",
+    "auth/invalid-email":
+      "The first field must be a full email address (for example ceo@rojob.eu). The password goes in the field below.",
     "auth/user-disabled": "This account has been disabled. Contact info@rojob.eu.",
     "auth/email-already-in-use": "An account already exists for this email. Sign in instead.",
     "auth/weak-password": "Choose a password of at least six characters.",
@@ -34,7 +35,8 @@ const MESSAGES = {
       "Nieprawidłowy e-mail lub hasło. Jeśli nie masz jeszcze konta, wybierz „Załóż konto” poniżej.",
     "auth/wrong-password": "Hasło jest nieprawidłowe. Spróbuj ponownie lub zresetuj je poniżej.",
     "auth/user-not-found": "Nie ma konta dla tego adresu e-mail. Wybierz „Załóż konto” poniżej.",
-    "auth/invalid-email": "Ten adres e-mail wygląda na nieprawidłowy.",
+    "auth/invalid-email":
+      "W pierwszym polu podaj pełny adres e-mail (na przykład ceo@rojob.eu). Hasło wpisz w polu poniżej.",
     "auth/user-disabled": "To konto zostało zablokowane. Napisz na info@rojob.eu.",
     "auth/email-already-in-use": "Konto dla tego e-maila już istnieje. Zaloguj się.",
     "auth/weak-password": "Wybierz hasło o długości co najmniej sześciu znaków.",

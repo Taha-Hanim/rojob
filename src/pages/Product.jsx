@@ -13,6 +13,7 @@ import {
   isSizeInStock,
   stockForSize,
 } from "../lib/inventory";
+import { barcodeFor } from "../lib/barcode";
 import {
   ACCESSORY_MEASUREMENTS,
   CARE_INSTRUCTIONS,
@@ -128,6 +129,8 @@ export default function Product() {
     add({
       productId,
       slug: product.slug,
+      sku: product.sku,
+      barcode: barcodeFor(product.sku || product.slug, selectedSize),
       name: product.name,
       color: product.color,
       colorId: product.colorId,
@@ -203,7 +206,11 @@ export default function Product() {
                         activeImage === img ? "border-midnight" : "border-midnight/10 hover:border-midnight/30"
                       }`}
                     >
-                      <img src={imgSrc(img)} alt="" className="h-full w-full object-cover" />
+                      <img
+                        src={imgSrc(img)}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
                     </button>
                   ))}
                 </div>

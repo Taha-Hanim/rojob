@@ -27,8 +27,11 @@ import {
   stockMap,
   withNormalizedStock,
   decrementMap,
+  incrementMap,
   remapStockToSizes,
 } from "./inventory";
+import { recordPaidSale } from "./salesWorkbook";
+import { barcodeFor, findByBarcode } from "./barcode";
 
 export { seedJournal };
 
@@ -68,6 +71,15 @@ function mergeSeedCommerce(rows) {
   });
 }
 
+function withMissingSeed(rows) {
+  const merged = mergeSeedCommerce(dropRetired(rows));
+  const have = new Set(merged.map((p) => p.slug || p.id));
+  const extra = seedProducts
+    .filter((p) => !have.has(p.slug))
+    .map((p) => withNormalizedStock({ ...p, id: p.slug }));
+  return [...merged, ...extra];
+}
+
 function localCatalogue() {
   return overlayLocalInventory(seedProducts.map((p) => ({ ...p, id: p.slug })));
 }
@@ -76,7 +88,9 @@ export async function fetchProductsOnce() {
   if (!isFirebaseConfigured) return localCatalogue();
   const snap = await getDocs(collection(db, "products"));
   if (snap.empty) return localCatalogue();
-  return mergeSeedCommerce(dropRetired(withIds(snap)));
+  // Trust Firestore as the source of truth when connected — do not let a
+  // browser's local cache override live stock after sales or scans elsewhere.
+  return withMissingSeed(withIds(snap));
 }
 
 export function subscribeProducts(cb) {
@@ -88,7 +102,7 @@ export function subscribeProducts(cb) {
   }
   return onSnapshot(collection(db, "products"), (snap) => {
     if (snap.empty) cb(localCatalogue());
-    else cb(mergeSeedCommerce(dropRetired(withIds(snap))));
+    else cb(withMissingSeed(withIds(snap)));
   });
 }
 
@@ -112,31 +126,167 @@ export function subscribeOrders(cb) {
   return onSnapshot(q, (snap) => cb(withIds(snap)));
 }
 
+const MOVES_KEY = "rojob_stock_moves";
+
+function readLocalMoves() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(MOVES_KEY) || "[]");
+    return Array.isArray(raw) ? raw : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeLocalMoves(rows) {
+  localStorage.setItem(MOVES_KEY, JSON.stringify(rows.slice(0, 400)));
+  window.dispatchEvent(new Event("rojob-stock-moves"));
+}
+
+async function resolveProductDoc(line) {
+  const ids = [...new Set([line.productId, line.slug].filter(Boolean))];
+  for (const id of ids) {
+    const ref = doc(db, "products", id);
+    const snap = await getDoc(ref);
+    if (snap.exists()) return { ref, data: { id: snap.id, ...snap.data() } };
+  }
+
+  const all = await getDocs(collection(db, "products"));
+  const rows = all.docs.map((d) => ({ ref: d.ref, data: { id: d.id, ...d.data() } }));
+  const bySlug = rows.find(
+    (row) =>
+      row.data.slug === line.slug ||
+      row.data.sku === line.sku ||
+      row.id === line.productId
+  );
+  if (bySlug) return bySlug;
+
+  const hit = findByBarcode(
+    rows.map((row) => row.data),
+    line.barcode || barcodeFor(line.sku || line.slug, line.size)
+  );
+  if (hit) {
+    const match = rows.find((row) => row.id === hit.product.id || row.data.slug === hit.product.slug);
+    if (match) return match;
+  }
+
+  const seed = seedProducts.find(
+    (p) => p.slug === line.slug || p.sku === line.sku || ids.includes(p.slug)
+  );
+  if (!seed) return null;
+  return { ref: doc(db, "products", seed.slug), data: { ...seed, id: seed.slug } };
+}
+
+async function writeStockMove(move) {
+  const row = {
+    id: crypto.randomUUID(),
+    ...move,
+    createdAt: new Date().toISOString(),
+  };
+  writeLocalMoves([row, ...readLocalMoves()]);
+  if (isFirebaseConfigured && db) {
+    try {
+      await addDoc(collection(db, "stockMoves"), {
+        ...row,
+        createdAt: serverTimestamp(),
+      });
+    } catch (err) {
+      console.error("[stock] move log failed", err.code || err.message);
+    }
+  }
+  return row;
+}
+
 async function applyPaidSale(items) {
   applySaleToLocalInventory(items);
 
   if (!isFirebaseConfigured) return;
 
   for (const line of items || []) {
-    const id = line.productId || line.slug;
-    if (!id) continue;
-    const productRef = doc(db, "products", id);
     try {
-      const snap = await getDoc(productRef);
-      const existing = snap.exists()
-        ? { id, ...snap.data() }
-        : seedProducts.find((p) => p.slug === id);
-      if (!existing) continue;
-      const nextMap = decrementMap(stockMap(existing), line.size, line.qty);
-      await setDoc(
-        productRef,
-        { stockBySize: nextMap, stock: Object.values(nextMap).reduce((n, v) => n + v, 0) },
-        { merge: true }
-      );
-    } catch {
-      /* order is already saved; inventory is best-effort */
+      const resolved = await resolveProductDoc(line);
+      if (!resolved) {
+        console.error("[stock] no product for line", line.slug || line.productId || line.barcode);
+        continue;
+      }
+      const nextMap = decrementMap(stockMap(resolved.data), line.size, line.qty);
+      const stock = Object.values(nextMap).reduce((n, v) => n + v, 0);
+      await setDoc(resolved.ref, { stockBySize: nextMap, stock }, { merge: true });
+      persistLocalProductStock({
+        ...resolved.data,
+        slug: resolved.data.slug || line.slug,
+        id: resolved.data.id,
+        stockBySize: nextMap,
+      });
+      await writeStockMove({
+        barcode: line.barcode || barcodeFor(resolved.data.sku || resolved.data.slug, line.size),
+        sku: resolved.data.sku || line.sku || "",
+        slug: resolved.data.slug || line.slug || "",
+        name: resolved.data.name || line.name || "",
+        color: resolved.data.color || line.color || "",
+        size: line.size || "",
+        qty: Math.max(1, Number(line.qty) || 1),
+        direction: "out",
+        location: "poland",
+        source: "order",
+        orderId: line.orderId || "",
+      });
+    } catch (err) {
+      console.error("[stock] could not decrement", line.slug || line.productId, err.code || err.message);
     }
   }
+}
+
+export async function applyStockMove({ product, size, qty = 1, direction = "out", location = "poland", source = "scan" }) {
+  const amount = Math.max(1, Number(qty) || 1);
+  const current = stockMap(product);
+  const nextMap = direction === "in" ? incrementMap(current, size, amount) : decrementMap(current, size, amount);
+  const stock = Object.values(nextMap).reduce((n, v) => n + v, 0);
+  const nextProduct = { ...product, stockBySize: nextMap, stock };
+  persistLocalProductStock(nextProduct);
+
+  if (isFirebaseConfigured && db) {
+    const resolved = await resolveProductDoc({
+      productId: product.id,
+      slug: product.slug,
+      sku: product.sku,
+    });
+    const ref = resolved?.ref || doc(db, "products", product.id || product.slug);
+    await setDoc(ref, { stockBySize: nextMap, stock }, { merge: true });
+  }
+
+  const move = await writeStockMove({
+    barcode: barcodeFor(product.sku || product.slug, size),
+    sku: product.sku || "",
+    slug: product.slug || "",
+    name: product.name || "",
+    color: product.color || "",
+    size: size || "",
+    qty: amount,
+    direction,
+    location,
+    source,
+  });
+  return { product: nextProduct, move };
+}
+
+export function subscribeStockMoves(cb) {
+  const emitLocal = () => cb(readLocalMoves());
+  if (!isFirebaseConfigured) {
+    emitLocal();
+    window.addEventListener("rojob-stock-moves", emitLocal);
+    return () => window.removeEventListener("rojob-stock-moves", emitLocal);
+  }
+  const unsub = onSnapshot(collection(db, "stockMoves"), (snap) => {
+    const rows = snap.docs
+      .map((d) => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+    cb(rows.length ? rows : readLocalMoves());
+  }, emitLocal);
+  window.addEventListener("rojob-stock-moves", emitLocal);
+  return () => {
+    unsub();
+    window.removeEventListener("rojob-stock-moves", emitLocal);
+  };
 }
 
 export async function createOrder(payload) {
@@ -150,11 +300,37 @@ export async function createOrder(payload) {
     const local = JSON.parse(localStorage.getItem("rojob_orders") || "[]");
     local.unshift({ ...order, id: crypto.randomUUID() });
     localStorage.setItem("rojob_orders", JSON.stringify(local));
-    if (saleShouldAdjustStock(payload)) applySaleToLocalInventory(payload.items);
+    if (saleShouldAdjustStock(payload)) {
+      applySaleToLocalInventory(payload.items);
+      try {
+        await recordPaidSale({
+          ...order,
+          id: local[0].id,
+          items: payload.items,
+          customer: payload.customer,
+          payment: payload.payment,
+        });
+      } catch {
+        /* order and stock already saved */
+      }
+    }
     return { id: local[0].id, local: true };
   }
   const ref = await addDoc(collection(db, "orders"), order);
-  if (saleShouldAdjustStock(payload)) await applyPaidSale(payload.items);
+  if (saleShouldAdjustStock(payload)) {
+    await applyPaidSale(payload.items);
+    try {
+      await recordPaidSale({
+        ...order,
+        id: ref.id,
+        items: payload.items,
+        customer: payload.customer,
+        payment: payload.payment,
+      });
+    } catch {
+      /* order and stock already saved */
+    }
+  }
   return { id: ref.id };
 }
 

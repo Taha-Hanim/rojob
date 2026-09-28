@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import { imgSrc } from "../lib/cloudinary";
 import { stockMap, totalStock } from "../lib/inventory";
 import { updateProductStock } from "../lib/store";
+import { barcodeFor } from "../lib/barcode";
+import { downloadSalesWorkbook } from "../lib/salesWorkbook";
 
 export default function Inventory({ products }) {
   const [drafts, setDrafts] = useState({});
   const [saving, setSaving] = useState("");
   const [msg, setMsg] = useState("");
+  const [excelBusy, setExcelBusy] = useState(false);
 
   useEffect(() => {
     const next = {};
@@ -38,6 +41,19 @@ export default function Inventory({ products }) {
     }
   };
 
+  const downloadExcel = async () => {
+    setExcelBusy(true);
+    setMsg("");
+    try {
+      await downloadSalesWorkbook(products);
+      setMsg("Backup copy downloaded. The cloud ledger is already saved.");
+    } catch (err) {
+      setMsg(err.message || "Could not build the Excel file.");
+    } finally {
+      setExcelBusy(false);
+    }
+  };
+
   if (!products.length) {
     return <p className="mt-10 text-midnight/50">No products in the catalogue yet.</p>;
   }
@@ -47,9 +63,19 @@ export default function Inventory({ products }) {
       <div>
         <h2 className="font-serif text-4xl md:text-5xl">Inventory</h2>
         <p className="mt-3 text-sm text-midnight/60 max-w-2xl leading-relaxed">
-          Counts update automatically after a completed payment. Unsuccessful payments leave
-          quantities unchanged. Edit a size here and save to correct stock by hand.
+          Counts update automatically after a completed payment. Scan in Poland or
+          Bangladesh from the Scan tab — a barcode reader writes the movement here.
+          Unsuccessful payments leave quantities unchanged. Edit a size here and save to
+          correct stock by hand.
         </p>
+        <button
+          type="button"
+          onClick={downloadExcel}
+          disabled={excelBusy}
+          className="mt-5 text-[10px] tracking-[0.22em] uppercase border border-midnight/20 px-5 py-2 hover:bg-midnight hover:text-porcelain transition-colors disabled:opacity-40"
+        >
+          {excelBusy ? "Building Excel…" : "Download Excel"}
+        </button>
       </div>
       {msg && <p className="text-sm text-midnight/70">{msg}</p>}
 
@@ -112,6 +138,9 @@ export default function Inventory({ products }) {
                             : "border-midnight/20"
                         }`}
                       />
+                      <span className="block mt-1 text-[9px] tracking-[0.08em] text-midnight/40 font-mono">
+                        {barcodeFor(product.sku || product.slug, size)}
+                      </span>
                     </label>
                   ))}
                 </div>

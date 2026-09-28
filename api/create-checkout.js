@@ -79,6 +79,8 @@ export default async function handler(req, res) {
         items.map((i) => ({
           productId: i.productId,
           slug: i.slug,
+          sku: i.sku,
+          barcode: i.barcode,
           name: i.name,
           color: i.color,
           size: i.size,

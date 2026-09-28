@@ -24,6 +24,14 @@ const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS || "ceo@rojob.eu")
   .map((e) => e.trim().toLowerCase())
   .filter(Boolean);
 
+function normalizeEmail(value) {
+  return String(value || "")
+    .replace(/\u00a0/g, " ")
+    .replace(/[\u200B-\u200D\uFEFF]/g, "")
+    .trim()
+    .toLowerCase();
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
@@ -117,7 +125,13 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(
     async (email, password) => {
-      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const clean = normalizeEmail(email);
+      if (!clean || !clean.includes("@")) {
+        const err = new Error("Enter the atelier email in the first field.");
+        err.code = "auth/invalid-email";
+        throw err;
+      }
+      const cred = await signInWithEmailAndPassword(auth, clean, password);
       await ensureUserDocSafely(cred.user);
       return cred;
     },
@@ -126,7 +140,8 @@ export function AuthProvider({ children }) {
 
   const register = useCallback(
     async ({ email, password, displayName = "", phone = "" }) => {
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      const clean = normalizeEmail(email);
+      const cred = await createUserWithEmailAndPassword(auth, clean, password);
       if (displayName) {
         await updateProfile(cred.user, { displayName });
       }
@@ -139,7 +154,7 @@ export function AuthProvider({ children }) {
   const logout = useCallback(() => (auth ? signOut(auth) : Promise.resolve()), []);
 
   const resetPassword = useCallback(
-    (email) => sendPasswordResetEmail(auth, email.trim()),
+    (email) => sendPasswordResetEmail(auth, normalizeEmail(email)),
     []
   );
 

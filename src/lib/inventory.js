@@ -72,11 +72,20 @@ export function withNormalizedStock(product) {
 }
 
 export function decrementMap(stockBySize, size, qty) {
+  return adjustMap(stockBySize, size, -Math.max(0, Number(qty) || 0));
+}
+
+export function incrementMap(stockBySize, size, qty) {
+  return adjustMap(stockBySize, size, Math.max(0, Number(qty) || 0));
+}
+
+export function adjustMap(stockBySize, size, delta) {
   const next = { ...stockBySize };
   const key = size || Object.keys(next)[0];
   if (!key) return next;
   const current = Number(next[key] ?? 0);
-  next[key] = Math.max(0, current - Math.max(0, Number(qty) || 0));
+  const change = Number(delta);
+  next[key] = Math.max(0, current + (Number.isFinite(change) ? change : 0));
   return next;
 }
 
@@ -101,10 +110,12 @@ export function writeLocalInventory(map) {
 export function overlayLocalInventory(products) {
   const inv = readLocalInventory();
   return products.map((p) => {
-    const key = p.slug || p.id;
-    const saved = inv[key];
-    if (!saved?.stockBySize) return withNormalizedStock(p);
-    return withNormalizedStock({ ...p, stockBySize: saved.stockBySize });
+    const saved =
+      inv[p.slug]?.stockBySize ||
+      inv[p.id]?.stockBySize ||
+      null;
+    if (!saved) return withNormalizedStock(p);
+    return withNormalizedStock({ ...p, stockBySize: saved });
   });
 }
 
@@ -149,15 +160,19 @@ export function inventoryErrorForCart(products, items) {
 export function applySaleToLocalInventory(items) {
   const inv = readLocalInventory();
   for (const line of items || []) {
-    const key = line.slug || line.productId;
-    if (!key) continue;
-    const seed = seedProducts.find((p) => p.slug === key);
-    const current = inv[key]?.stockBySize || seed?.stockBySize || stockMap(seed || { sizes: [line.size] });
+    const keys = [...new Set([line.slug, line.productId].filter(Boolean))];
+    if (!keys.length) continue;
+    const seed = seedProducts.find((p) => keys.includes(p.slug) || p.sku === line.sku);
+    const current =
+      keys.map((key) => inv[key]?.stockBySize).find(Boolean) ||
+      seed?.stockBySize ||
+      stockMap(seed || { sizes: [line.size] });
     const stockBySize = decrementMap(current, line.size, line.qty);
-    inv[key] = {
+    const row = {
       stockBySize,
       stock: Object.values(stockBySize).reduce((n, v) => n + v, 0),
     };
+    for (const key of keys) inv[key] = row;
   }
   writeLocalInventory(inv);
 }

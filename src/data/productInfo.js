@@ -52,6 +52,7 @@ export function measurementKindFor(product) {
   const slug = `${product?.slug || ""} ${product?.category || ""}`.toLowerCase();
   if (/beanie|scarf|hat|glove|sock|accessor/.test(slug)) return "accessory";
   if (/vest/.test(slug)) return "vest";
+  if (/track|hoodie|jogger/.test(slug)) return "top";
   return "top";
 }
 
