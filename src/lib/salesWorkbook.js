@@ -83,6 +83,10 @@ async function pushPaidSaleToSheet(lines) {
 
 export async function recordPaidSale(order) {
   const soldAt = new Date().toISOString();
+  const buyer = order.customer || {};
+  const buyerName = buyer.name || "";
+  const buyerEmail = buyer.email || "";
+  const buyerPhone = buyer.phone || "";
   const lines = (order.items || []).map((item) => ({
     id: crypto.randomUUID(),
     orderId: order.id || "",
@@ -95,7 +99,16 @@ export async function recordPaidSale(order) {
     size: item.size || "",
     qty: Math.max(1, Number(item.qty) || 1),
     price: item.price == null ? null : Number(item.price),
-    customer: order.customer?.email || order.customer?.name || "",
+    buyerName,
+    buyerEmail,
+    buyerPhone,
+    buyerAddress: buyer.address || "",
+    buyerCity: buyer.city || "",
+    buyerPostcode: buyer.postcode || "",
+    buyerCountry: buyer.country || "",
+    buyerNotes: buyer.notes || "",
+    // keep legacy single field for older rows / sheets
+    customer: buyerEmail || buyerName || buyerPhone || "",
     payment: order.payment || "",
   }));
 
@@ -256,7 +269,14 @@ export async function downloadSalesWorkbook(products) {
     { header: "Size", key: "size", width: 12 },
     { header: "Qty", key: "qty", width: 8 },
     { header: "PLN", key: "price", width: 10 },
-    { header: "Customer", key: "customer", width: 28 },
+    { header: "Buyer name", key: "buyerName", width: 22 },
+    { header: "Email", key: "buyerEmail", width: 28 },
+    { header: "Phone", key: "buyerPhone", width: 16 },
+    { header: "Address", key: "buyerAddress", width: 28 },
+    { header: "City", key: "buyerCity", width: 16 },
+    { header: "Postcode", key: "buyerPostcode", width: 12 },
+    { header: "Country", key: "buyerCountry", width: 14 },
+    { header: "Notes", key: "buyerNotes", width: 24 },
     { header: "Payment", key: "payment", width: 12 },
   ];
   salesSheet.getRow(1).font = { bold: true };
@@ -272,7 +292,14 @@ export async function downloadSalesWorkbook(products) {
       size: line.size || "",
       qty: line.qty || 1,
       price: line.price ?? "",
-      customer: line.customer || "",
+      buyerName: line.buyerName || line.customer || "",
+      buyerEmail: line.buyerEmail || "",
+      buyerPhone: line.buyerPhone || "",
+      buyerAddress: line.buyerAddress || "",
+      buyerCity: line.buyerCity || "",
+      buyerPostcode: line.buyerPostcode || "",
+      buyerCountry: line.buyerCountry || "",
+      buyerNotes: line.buyerNotes || "",
       payment: line.payment || "",
     });
     salesSheet.getRow(saleRow).height = 48;

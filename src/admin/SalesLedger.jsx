@@ -64,8 +64,8 @@ export default function SalesLedger({ products }) {
       <div>
         <h2 className="font-serif text-4xl md:text-5xl">Sales ledger</h2>
         <p className="mt-3 text-sm text-midnight/60 max-w-2xl leading-relaxed">
-          Every completed payment is saved in the cloud automatically. Open this page on any
-          device — there is nothing to download. Declined cards never appear here.
+          Every completed payment adds a Sales row with barcode, product, and the buyer’s
+          name, email, phone and address. Declined cards never appear here.
         </p>
         <p className="mt-2 text-sm text-midnight/50">
           Google Sheet:{" "}
@@ -104,7 +104,9 @@ export default function SalesLedger({ products }) {
               <th className="px-3">Size</th>
               <th className="px-3">Qty</th>
               <th className="px-3">PLN</th>
-              <th className="px-3">Customer</th>
+              <th className="px-3">Buyer</th>
+              <th className="px-3">Email</th>
+              <th className="px-3">Phone</th>
             </tr>
           </thead>
           <tbody>
@@ -128,7 +130,16 @@ export default function SalesLedger({ products }) {
                   <td className="px-3">{line.size || "—"}</td>
                   <td className="px-3">{line.qty || 1}</td>
                   <td className="px-3">{line.price == null ? "—" : line.price}</td>
-                  <td className="px-3 text-midnight/60">{line.customer || "—"}</td>
+                  <td className="px-3">
+                    <div>{line.buyerName || line.customer || "—"}</div>
+                    {(line.buyerCity || line.buyerCountry) && (
+                      <div className="text-[10px] text-midnight/40">
+                        {[line.buyerCity, line.buyerCountry].filter(Boolean).join(", ")}
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-3 text-midnight/60">{line.buyerEmail || "—"}</td>
+                  <td className="px-3 text-midnight/60">{line.buyerPhone || "—"}</td>
                 </tr>
               );
             })}

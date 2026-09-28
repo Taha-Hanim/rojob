@@ -42,8 +42,27 @@ function setupHeaders_(barcodes, stock, sales) {
     stock.setFrozenRows(1);
   }
   if (sales.getLastRow() === 0) {
-    sales.appendRow(["Sold at", "Order", "Barcode", "Barcode image", "Product", "Colour", "Size", "Qty", "PLN", "Customer", "Payment"]);
-    sales.getRange(1, 1, 1, 11).setFontWeight("bold");
+    sales.appendRow([
+      "Sold at",
+      "Order",
+      "Barcode",
+      "Barcode image",
+      "Product",
+      "Colour",
+      "Size",
+      "Qty",
+      "PLN",
+      "Buyer name",
+      "Email",
+      "Phone",
+      "Address",
+      "City",
+      "Postcode",
+      "Country",
+      "Notes",
+      "Payment",
+    ]);
+    sales.getRange(1, 1, 1, 18).setFontWeight("bold");
     sales.setFrozenRows(1);
     sales.setColumnWidth(4, 220);
   }
@@ -130,7 +149,14 @@ function appendSales_(sales, lines) {
       line.size || "",
       line.qty || 1,
       line.price == null ? "" : line.price,
-      line.customer || "",
+      line.buyerName || line.customer || "",
+      line.buyerEmail || "",
+      line.buyerPhone || "",
+      line.buyerAddress || "",
+      line.buyerCity || "",
+      line.buyerPostcode || "",
+      line.buyerCountry || "",
+      line.buyerNotes || "",
       line.payment || "",
     ]);
     const row = sales.getLastRow();
