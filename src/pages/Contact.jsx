@@ -133,6 +133,19 @@ export default function Contact() {
                   {PHONE}
                 </a>
               </div>
+
+              <div>
+                <p className="text-[10px] tracking-[0.32em] uppercase text-midnight/45">
+                  {t("contact.addressLabel")}
+                </p>
+                <p className="mt-2 font-serif text-xl leading-snug text-midnight/80">
+                  {t("contact.address")}
+                </p>
+                <p className="mt-3 text-[11px] tracking-[0.18em] uppercase text-midnight/45">
+                  {t("contact.nip")}
+                </p>
+                <p className="mt-1 text-sm text-midnight/55">{t("contact.established")}</p>
+              </div>
             </div>
           </Reveal>
 

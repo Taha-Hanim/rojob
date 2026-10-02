@@ -181,9 +181,7 @@ function TermsModal({ open, onClose, sections, t, placeholders }) {
           ))}
           <div className="pt-6 border-t border-midnight/10 text-xs text-midnight/50 space-y-1">
             <p>{placeholders.company}</p>
-            <p>
-              {placeholders.nip} · {placeholders.regon}
-            </p>
+            <p>NIP {placeholders.nip}</p>
             <p>{placeholders.address}</p>
             <p>{placeholders.email}</p>
           </div>

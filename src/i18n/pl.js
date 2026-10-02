@@ -15,7 +15,7 @@ export default {
   },
   home: {
     hero: {
-      label: "Zał. 2026 · Warszawa · 52°N",
+      label: "Zał. 28 września 2026 · Warszawa · 52°N",
       title: "ROJOB",
       subtitle: "Więcej niż ubrania. Wyższy standard na co dzień.",
       collection: "Pierwsza kolekcja",
@@ -155,20 +155,20 @@ export default {
     privacy: "Polityka prywatności",
     cookies: "Pliki cookie",
     copyright: "© 2026 ROJOB",
-    location: "Warszawa, Polska",
+    location: "ul. Władysława Pytlasińskiego 16-13, 00-777 Warszawa",
     newsletter: "Newsletter",
     language: "Język",
   },
   world: {
     title: "Nasz świat",
-    est: "Zał. 2026 · Warszawa · 52°N",
+    est: "Zał. 28 września 2026 · Warszawa · 52°N",
     intro:
       "ROJOB to niezależna europejska marka modowa urodzona w Warszawie na 52°N — mieście kontrastów, wytrwałości i nowoczesnej elegancji.",
     coordinate: "Warszawa daje współrzędną. ROJOB definiuje język.",
     rojob: {
       title: "ROJOB",
       copy:
-        "ROJOB to niezależna europejska marka modowa urodzona w Warszawie na 52°N. Założona w 2026 roku, dom rozwija trwałe elementy garderoby, w których spotykają się spokojna forma, precyzyjny detal i codzienny luksus — bez pożyczonego dziedzictwa ani sezonowej nowości dla samej nowości.",
+        "ROJOB to niezależna europejska marka modowa urodzona w Warszawie na 52°N. Założona 28 września 2026 roku, dom rozwija trwałe elementy garderoby, w których spotykają się spokojna forma, precyzyjny detal i codzienny luksus — bez pożyczonego dziedzictwa ani sezonowej nowości dla samej nowości.",
     },
     fiftyTwo: {
       title: "52°N",
@@ -257,6 +257,10 @@ export default {
       ceo: "ceo@rojob.eu",
     },
     note: "Odpowiadamy w ciągu dwóch dni roboczych.",
+    addressLabel: "Siedziba",
+    address: "ul. Władysława Pytlasińskiego 16-13, 00-777 Warszawa, Polska",
+    nip: "NIP 5214181711",
+    established: "Założona 28 września 2026",
     form: {
       department: "Dział",
       name: "Imię i nazwisko",
@@ -357,9 +361,9 @@ export default {
     success:
       "Wniosek otrzymany. Jeśli będziemy mogli kontynuować, skontaktujemy się pod podanymi danymi.",
     termsTitle: "Hurtowe warunki handlowe",
-    termsEffective: "Obowiązuje od 11 września 2026 · wyłącznie B2B",
+    termsEffective: "Obowiązuje od 28 września 2026 · wyłącznie B2B",
     legalNote:
-      "Warunki maksymalizują ochronę umowną ROJOB w praktyce B2B. Nie wyłączają odpowiedzialności, której prawo bezwzględnie nie pozwala wyłączyć. Przed użyciem w obrocie wymagają przeglądu prawnego i uzupełnienia danych firmy.",
+      "Warunki maksymalizują ochronę umowną ROJOB w praktyce B2B. Nie wyłączają odpowiedzialności, której prawo bezwzględnie nie pozwala wyłączyć.",
   },
   legal: {
     nav: "Informacje prawne",
@@ -372,29 +376,29 @@ export default {
     complaints: "Reklamacje",
     payments: "Płatności",
     company: "Informacje o firmie",
-    reviewNote: "Wymaga weryfikacji prawnej przed publicznym uruchomieniem.",
+    reviewNote: "ROJOB · założona 28 września 2026 · Warszawa",
     placeholders: {
-      company: "[NAZWA PRAWNA FIRMY]",
-      nip: "[NIP]",
-      regon: "[REGON/KRS]",
-      address: "[ADRES REJESTROWY]",
+      company: "ROJOB",
+      nip: "5214181711",
+      regon: "",
+      address: "ul. Władysława Pytlasińskiego 16-13, 00-777 Warszawa, Polska",
       email: "info@rojob.eu",
     },
     bodies: {
       terms:
-        "Niniejszy regulamin określa zasady korzystania ze strony ROJOB oraz zakupu towarów od [NAZWA PRAWNA FIRMY] (\"ROJOB\", \"my\"). Składając zamówienie lub korzystając z witryny, akceptujesz te warunki.\n\nWszystkie opisy produktów, zdjęcia i ceny podawane są w dobrej wierze. ROJOB zastrzega sobie prawo do zmiany informacji o produkcie przed wysyłką. Zamówienia podlegają akceptacji i dostępności.\n\nW sprawach regulaminu: [ADRES E-MAIL KONTAKTOWY]. Siedziba: [ADRES REJESTROWY]. NIP: [NIP]. REGON/KRS: [REGON/KRS].",
+        "Niniejszy regulamin określa zasady korzystania ze strony ROJOB oraz zakupu towarów od ROJOB (\"ROJOB\", \"my\"). Składając zamówienie lub korzystając z witryny, akceptujesz te warunki.\n\nWszystkie opisy produktów, zdjęcia i ceny podawane są w dobrej wierze. ROJOB zastrzega sobie prawo do zmiany informacji o produkcie przed wysyłką. Zamówienia podlegają akceptacji i dostępności.\n\nW sprawach regulaminu: [ADRES E-MAIL KONTAKTOWY]. Siedziba: [ADRES REJESTROWY]. NIP [NIP].",
       privacy:
-        "ROJOB szanuje Twoją prywatność. Niniejsza polityka wyjaśnia, w jaki sposób [NAZWA PRAWNA FIRMY] zbiera i przetwarza dane osobowe, gdy odwiedzasz rojob.eu, zakładasz konto, zapisujesz się do newslettera lub kontaktujesz się z nami.\n\nPrzetwarzamy dane na podstawach prawnych obejmujących wykonanie umowy, prawnie uzasadniony interes oraz zgodę (gdy wymagana). Przysługują Ci prawa wynikające z RODO — w tym dostęp, sprostowanie, usunięcie, ograniczenie, przenoszenie i sprzeciw. Aby je wykonać, napisz na [ADRES E-MAIL KONTAKTOWY].\n\nPrzechowujemy dane osobowe tylko tak długo, jak jest to konieczne. Nie sprzedajemy Twoich danych podmiotom trzecim.",
+        "ROJOB szanuje Twoją prywatność. Niniejsza polityka wyjaśnia, w jaki sposób ROJOB zbiera i przetwarza dane osobowe, gdy odwiedzasz rojob.eu, zakładasz konto, zapisujesz się do newslettera lub kontaktujesz się z nami.\n\nPrzetwarzamy dane na podstawach prawnych obejmujących wykonanie umowy, prawnie uzasadniony interes oraz zgodę (gdy wymagana). Przysługują Ci prawa wynikające z RODO — w tym dostęp, sprostowanie, usunięcie, ograniczenie, przenoszenie i sprzeciw. Aby je wykonać, napisz na [ADRES E-MAIL KONTAKTOWY].\n\nPrzechowujemy dane osobowe tylko tak długo, jak jest to konieczne. Nie sprzedajemy Twoich danych podmiotom trzecim.\n\nAdministrator: ROJOB, [ADRES REJESTROWY], NIP [NIP].",
       cookies:
         "Ta witryna używa niezbędnych plików cookie wymaganych do bezpieczeństwa, preferencji językowych i funkcji sklepu. Opcjonalne pliki analityczne stosujemy wyłącznie za Twoją zgodą w banerze cookie.\n\nMożesz wycofać zgodę w dowolnym momencie, zmieniając ustawienia przeglądarki lub preferencje cookie na tej stronie. Szczegóły przetwarzania danych związanych z plikami cookie znajdziesz w Polityce prywatności.",
       deliveryReturns:
-        "Zamówienia wysyłamy z Warszawy w ciągu 1–2 dni roboczych, od poniedziałku do piątku. Link do śledzenia przesyłki otrzymasz e-mailem, gdy paczka od nas wyjedzie.\n\nCzas i koszt dostawy: Polska 1–2 dni robocze, gratis powyżej 500 PLN, poniżej 19 PLN. Unia Europejska 2–5 dni roboczych, gratis powyżej 120 EUR, poniżej 25 EUR. Wielka Brytania, Szwajcaria i Norwegia 3–7 dni roboczych za 35 EUR, cło płatne przy odbiorze. Pozostałe kraje 5–10 dni roboczych za 45 EUR, cło i podatki płatne przy odbiorze.\n\nZwroty przyjmujemy w ciągu 30 dni od dostawy; na terenie Polski i Unii Europejskiej są bezpłatne. Jako konsument w UE masz dodatkowo ustawowe prawo odstąpienia od umowy w ciągu 14 dni od otrzymania towaru, bez podania przyczyny.\n\nZwracane produkty muszą być nienoszone, nieprane oraz odesłane ze wszystkimi metkami i oryginalnym opakowaniem. Zwrot środków realizujemy na pierwotną metodę płatności w ciągu 14 dni od otrzymania przesyłki zwrotnej. Wymiana rozmiaru jest bezpłatna w Polsce i UE, w miarę dostępności.\n\nAby zgłosić zwrot lub wymianę, napisz na [ADRES E-MAIL KONTAKTOWY], podając numer zamówienia. Niniejsza polityka nie narusza ustawowych uprawnień konsumenta wynikających z prawa polskiego i unijnego. [NAZWA PRAWNA FIRMY], [ADRES REJESTROWY].",
+        "Zamówienia wysyłamy z Warszawy w ciągu 1–2 dni roboczych, od poniedziałku do piątku. Link do śledzenia przesyłki otrzymasz e-mailem, gdy paczka od nas wyjedzie.\n\nCzas i koszt dostawy: Polska 1–2 dni robocze, gratis powyżej 500 PLN, poniżej 19 PLN. Unia Europejska 2–5 dni roboczych, gratis powyżej 120 EUR, poniżej 25 EUR. Wielka Brytania, Szwajcaria i Norwegia 3–7 dni roboczych za 35 EUR, cło płatne przy odbiorze. Pozostałe kraje 5–10 dni roboczych za 45 EUR, cło i podatki płatne przy odbiorze.\n\nZwroty przyjmujemy w ciągu 30 dni od dostawy; na terenie Polski i Unii Europejskiej są bezpłatne. Jako konsument w UE masz dodatkowo ustawowe prawo odstąpienia od umowy w ciągu 14 dni od otrzymania towaru, bez podania przyczyny.\n\nZwracane produkty muszą być nienoszone, nieprane oraz odesłane ze wszystkimi metkami i oryginalnym opakowaniem. Zwrot środków realizujemy na pierwotną metodę płatności w ciągu 14 dni od otrzymania przesyłki zwrotnej. Wymiana rozmiaru jest bezpłatna w Polsce i UE, w miarę dostępności.\n\nAby zgłosić zwrot lub wymianę, napisz na [ADRES E-MAIL KONTAKTOWY], podając numer zamówienia. Niniejsza polityka nie narusza ustawowych uprawnień konsumenta wynikających z prawa polskiego i unijnego. ROJOB, [ADRES REJESTROWY], NIP [NIP].",
       payments:
-        "Akceptowane metody płatności i szczegóły bezpiecznej kasy zostaną wymienione przed rozpoczęciem transakcji na żywo. ROJOB będzie korzystać z procesorów płatności zgodnych z PCI.\n\nCeny wyświetlane są w walucie wybranej na stronie. Ostateczne podatki i cła zależą od kraju dostawy i zostaną potwierdzone przy kasie.",
+        "ROJOB akceptuje karty i inne metody płatności dostępne przy kasie poprzez procesory zgodne z PCI.\n\nCeny wyświetlane są w walucie wybranej na stronie. Ostateczne podatki i cła zależą od kraju dostawy i zostaną potwierdzone przy kasie.\n\nSprzedawca: ROJOB, [ADRES REJESTROWY], NIP [NIP].",
       complaints:
-        "Jeśli chcesz złożyć reklamację dotyczącą produktów lub usług ROJOB, skontaktuj się z [ADRES E-MAIL KONTAKTOWY], podając numer zamówienia i opis problemu.\n\n[NAZWA PRAWNA FIRMY] potwierdzi otrzymanie reklamacji w ciągu [DO POTWIERDZENIA] dni roboczych i odpowie zgodnie z obowiązującymi przepisami o ochronie konsumentów w Polsce i Unii Europejskiej.",
+        "Jeśli chcesz złożyć reklamację dotyczącą produktów lub usług ROJOB, skontaktuj się z [ADRES E-MAIL KONTAKTOWY], podając numer zamówienia i opis problemu.\n\nROJOB potwierdzi otrzymanie reklamacji w ciągu 14 dni roboczych i odpowie zgodnie z obowiązującymi przepisami o ochronie konsumentów w Polsce i Unii Europejskiej.\n\nROJOB, [ADRES REJESTROWY], NIP [NIP].",
       company:
-        "[NAZWA PRAWNA FIRMY] to podmiot prawny prowadzący markę ROJOB.\n\nAdres rejestrowy: [ADRES REJESTROWY]\nNIP: [NIP]\nREGON/KRS: [REGON/KRS]\nKontakt: [ADRES E-MAIL KONTAKTOWY]\n\nROJOB to niezależna europejska marka modowa założona w Warszawie w 2026 roku.",
+        "ROJOB to podmiot prawny prowadzący markę ROJOB.\n\nData założenia: 28 września 2026\nAdres rejestrowy: [ADRES REJESTROWY]\nNIP: [NIP]\nKontakt: [ADRES E-MAIL KONTAKTOWY]\n\nROJOB to niezależna europejska marka modowa założona w Warszawie.",
     },
   },
   cookie: {

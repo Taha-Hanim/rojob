@@ -55,10 +55,7 @@ export default function CookieBanner() {
   return (
     <div className="fixed bottom-0 inset-x-0 z-[90] p-4 md:p-6 pointer-events-none">
       <div className="max-w-3xl mx-auto pointer-events-auto bg-porcelain border border-midnight/12 shadow-sm px-5 py-4 md:px-6 md:py-5">
-        <p className="text-sm text-midnight/70 leading-relaxed">
-          {t("cookie.copy")}{" "}
-          <span className="text-midnight/45 italic">{t("legal.reviewNote")}</span>
-        </p>
+        <p className="text-sm text-midnight/70 leading-relaxed">{t("cookie.copy")}</p>
 
         {showSettings && (
           <label className="mt-4 flex items-center gap-3 text-sm cursor-pointer">

@@ -15,7 +15,7 @@ export default {
   },
   home: {
     hero: {
-      label: "Est. 2026 · Warsaw · 52°N",
+      label: "Est. 28 September 2026 · Warsaw · 52°N",
       title: "ROJOB",
       subtitle: "More than clothing. A higher standard in everyday life.",
       collection: "First Collection",
@@ -155,20 +155,20 @@ export default {
     privacy: "Privacy",
     cookies: "Cookies",
     copyright: "© 2026 ROJOB",
-    location: "Warsaw, Poland",
+    location: "ul. Władysława Pytlasińskiego 16-13, 00-777 Warsaw",
     newsletter: "Newsletter",
     language: "Language",
   },
   world: {
     title: "Our World",
-    est: "Est. 2026 · Warsaw · 52°N",
+    est: "Est. 28 September 2026 · Warsaw · 52°N",
     intro:
       "ROJOB is an independent European fashion label born in Warsaw at 52°N — a city defined by contrast, resilience and modern refinement.",
     coordinate: "Warsaw provides the coordinate. ROJOB defines the language.",
     rojob: {
       title: "ROJOB",
       copy:
-        "ROJOB is an independent European fashion label born in Warsaw at 52°N. Founded in 2026, the house develops enduring wardrobe pieces where quiet design, precise detail and everyday luxury meet — without borrowed heritage or seasonal novelty for its own sake.",
+        "ROJOB is an independent European fashion label born in Warsaw at 52°N. Established on 28 September 2026, the house develops enduring wardrobe pieces where quiet design, precise detail and everyday luxury meet — without borrowed heritage or seasonal novelty for its own sake.",
     },
     fiftyTwo: {
       title: "52°N",
@@ -257,6 +257,10 @@ export default {
       ceo: "ceo@rojob.eu",
     },
     note: "We respond within two business days.",
+    addressLabel: "Registered office",
+    address: "ul. Władysława Pytlasińskiego 16-13, 00-777 Warsaw, Poland",
+    nip: "NIP 5214181711",
+    established: "Established 28 September 2026",
     form: {
       department: "Department",
       name: "Name",
@@ -356,9 +360,9 @@ export default {
     successTitle: "Received",
     success: "Application received. If we can proceed, we will contact you using the details you provided.",
     termsTitle: "Wholesale terms & conditions",
-    termsEffective: "Effective 11 September 2026 · B2B only",
+    termsEffective: "Effective 28 September 2026 · B2B only",
     legalNote:
-      "These terms maximise contractual protection for ROJOB under Polish B2B practice. They cannot exclude liability that mandatory law forbids excluding. Have a qualified lawyer review and complete your company details before relying on them.",
+      "These terms maximise contractual protection for ROJOB under Polish B2B practice. They cannot exclude liability that mandatory law forbids excluding.",
   },
   legal: {
     nav: "Legal",
@@ -371,29 +375,29 @@ export default {
     complaints: "Complaints",
     payments: "Payments",
     company: "Company information",
-    reviewNote: "Requires legal review before public launch.",
+    reviewNote: "ROJOB · established 28 September 2026 · Warsaw",
     placeholders: {
-      company: "[LEGAL COMPANY NAME]",
-      nip: "[NIP]",
-      regon: "[REGON/KRS]",
-      address: "[REGISTERED ADDRESS]",
+      company: "ROJOB",
+      nip: "5214181711",
+      regon: "",
+      address: "ul. Władysława Pytlasińskiego 16-13, 00-777 Warsaw, Poland",
       email: "info@rojob.eu",
     },
     bodies: {
       terms:
-        "These terms and conditions govern your use of the ROJOB website and any purchase of goods from [LEGAL COMPANY NAME] (\"ROJOB\", \"we\", \"us\"). By placing an order or using this site, you agree to these terms.\n\nAll product descriptions, imagery and pricing are provided in good faith. ROJOB reserves the right to amend product information prior to dispatch. Orders are subject to acceptance and availability.\n\nFor questions regarding these terms, contact [CONTACT EMAIL]. Registered office: [REGISTERED ADDRESS]. NIP: [NIP]. REGON/KRS: [REGON/KRS].",
+        "These terms and conditions govern your use of the ROJOB website and any purchase of goods from ROJOB (\"ROJOB\", \"we\", \"us\"). By placing an order or using this site, you agree to these terms.\n\nAll product descriptions, imagery and pricing are provided in good faith. ROJOB reserves the right to amend product information prior to dispatch. Orders are subject to acceptance and availability.\n\nFor questions regarding these terms, contact [CONTACT EMAIL]. Registered office: [REGISTERED ADDRESS]. NIP [NIP].",
       privacy:
-        "ROJOB respects your privacy. This policy explains how [LEGAL COMPANY NAME] collects and processes personal data when you visit rojob.eu, create an account, subscribe to our newsletter or contact us.\n\nWe process data on lawful bases including contract performance, legitimate interests and consent (where required). You have rights under GDPR — including access, rectification, erasure, restriction, portability and objection. To exercise these rights, contact [CONTACT EMAIL].\n\nWe retain personal data only as long as necessary for the purposes described. We do not sell your data to third parties.",
+        "ROJOB respects your privacy. This policy explains how ROJOB collects and processes personal data when you visit rojob.eu, create an account, subscribe to our newsletter or contact us.\n\nWe process data on lawful bases including contract performance, legitimate interests and consent (where required). You have rights under GDPR — including access, rectification, erasure, restriction, portability and objection. To exercise these rights, contact [CONTACT EMAIL].\n\nWe retain personal data only as long as necessary for the purposes described. We do not sell your data to third parties.\n\nController: ROJOB, [REGISTERED ADDRESS], NIP [NIP].",
       cookies:
         "This website uses essential cookies required for security, language preference and shopping functionality. Optional analytics cookies are used only with your consent via the cookie banner.\n\nYou may withdraw consent at any time by adjusting your browser settings or using the cookie preferences on this site. For details on data processing related to cookies, see our Privacy policy.",
       deliveryReturns:
-        "Orders are dispatched from Warsaw within 1–2 working days, Monday to Friday. You receive a tracking link by email as soon as the parcel leaves us.\n\nDelivery times and costs: Poland 1–2 working days, free over 500 PLN and otherwise 19 PLN. European Union 2–5 working days, free over 120 EUR and otherwise 25 EUR. United Kingdom, Switzerland and Norway 3–7 working days at 35 EUR with duties payable on delivery. Rest of world 5–10 working days at 45 EUR with duties and taxes payable on delivery.\n\nReturns are accepted within 30 days of delivery and are free of charge within Poland and the European Union. As an EU consumer you additionally hold a statutory 14-day right of withdrawal from the day you receive the goods, without giving any reason.\n\nReturned items must be unworn, unwashed and sent back with all tags and the original packaging intact. Refunds are issued to the original payment method within 14 days of us receiving the return. Size exchanges are free within Poland and the EU, subject to availability.\n\nTo start a return or exchange, email [CONTACT EMAIL] with your order number. Statutory warranty rights under Polish and EU consumer law are unaffected by this policy. [LEGAL COMPANY NAME], [REGISTERED ADDRESS].",
+        "Orders are dispatched from Warsaw within 1–2 working days, Monday to Friday. You receive a tracking link by email as soon as the parcel leaves us.\n\nDelivery times and costs: Poland 1–2 working days, free over 500 PLN and otherwise 19 PLN. European Union 2–5 working days, free over 120 EUR and otherwise 25 EUR. United Kingdom, Switzerland and Norway 3–7 working days at 35 EUR with duties payable on delivery. Rest of world 5–10 working days at 45 EUR with duties and taxes payable on delivery.\n\nReturns are accepted within 30 days of delivery and are free of charge within Poland and the European Union. As an EU consumer you additionally hold a statutory 14-day right of withdrawal from the day you receive the goods, without giving any reason.\n\nReturned items must be unworn, unwashed and sent back with all tags and the original packaging intact. Refunds are issued to the original payment method within 14 days of us receiving the return. Size exchanges are free within Poland and the EU, subject to availability.\n\nTo start a return or exchange, email [CONTACT EMAIL] with your order number. Statutory warranty rights under Polish and EU consumer law are unaffected by this policy. ROJOB, [REGISTERED ADDRESS], NIP [NIP].",
       payments:
-        "Accepted payment methods and secure checkout details will be listed here before live transactions commence. ROJOB will use PCI-compliant payment processors.\n\nPrices are displayed in the currency selected on site. Final tax and duty treatment depends on delivery destination and will be confirmed at checkout.",
+        "ROJOB accepts card and other payment methods offered at checkout through PCI-compliant processors.\n\nPrices are displayed in the currency selected on site. Final tax and duty treatment depends on delivery destination and will be confirmed at checkout.\n\nSeller: ROJOB, [REGISTERED ADDRESS], NIP [NIP].",
       complaints:
-        "If you wish to submit a complaint regarding ROJOB products or services, please contact [CONTACT EMAIL] with your order reference and a clear description of the issue.\n\n[LEGAL COMPANY NAME] will acknowledge complaints within [TO BE CONFIRMED] business days and respond in accordance with applicable consumer protection law in Poland and the European Union.",
+        "If you wish to submit a complaint regarding ROJOB products or services, please contact [CONTACT EMAIL] with your order reference and a clear description of the issue.\n\nROJOB will acknowledge complaints within 14 business days and respond in accordance with applicable consumer protection law in Poland and the European Union.\n\nROJOB, [REGISTERED ADDRESS], NIP [NIP].",
       company:
-        "[LEGAL COMPANY NAME] is the legal entity operating the ROJOB brand.\n\nRegistered address: [REGISTERED ADDRESS]\nNIP: [NIP]\nREGON/KRS: [REGON/KRS]\nContact: [CONTACT EMAIL]\n\nROJOB is an independent European fashion label founded in Warsaw in 2026.",
+        "ROJOB is the legal entity operating the ROJOB brand.\n\nDate of establishment: 28 September 2026\nRegistered address: [REGISTERED ADDRESS]\nNIP: [NIP]\nContact: [CONTACT EMAIL]\n\nROJOB is an independent European fashion label founded in Warsaw.",
     },
   },
   cookie: {

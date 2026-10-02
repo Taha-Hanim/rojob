@@ -50,15 +50,18 @@ export default function Legal({ type = "terms" }) {
     .replace(/\[LEGAL COMPANY NAME\]/g, placeholders.company)
     .replace(/\[NAZWA PRAWNA FIRMY\]/g, placeholders.company)
     .replace(/\[NIP\]/g, placeholders.nip)
-    .replace(/\[REGON\/KRS\]/g, placeholders.regon)
+    .replace(/\[REGON\/KRS\]/g, placeholders.regon || "")
     .replace(/\[REGISTERED ADDRESS\]/g, placeholders.address)
     .replace(/\[ADRES REJESTROWY\]/g, placeholders.address)
     .replace(/\[CONTACT EMAIL\]/g, placeholders.email)
-    .replace(/\[ADRES E-MAIL KONTAKTOWY\]/g, placeholders.email);
+    .replace(/\[ADRES E-MAIL KONTAKTOWY\]/g, placeholders.email)
+    .replace(/\nNIP: \n/g, "\n")
+    .replace(/REGON\/KRS: \n/g, "")
+    .replace(/ · $/g, "");
 
   return (
     <>
-      <Seo title={`${title} — ROJOB`} description={t("legal.reviewNote")} />
+      <Seo title={`${title} — ROJOB`} description={`${placeholders.company} · ${placeholders.address}`} />
 
       <section className="max-w-7xl mx-auto px-5 py-16 md:py-24">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
@@ -90,9 +93,9 @@ export default function Legal({ type = "terms" }) {
 
           <article className="lg:col-span-9">
             <Reveal>
-              <div className="mb-8 p-4 border border-crimson/30 bg-crimson/5 text-sm text-midnight/80">
+              <p className="text-[10px] tracking-[0.28em] uppercase text-midnight/45 mb-6">
                 {t("legal.reviewNote")}
-              </div>
+              </p>
 
               <h1 className="font-serif text-5xl md:text-6xl">{title}</h1>
 
@@ -104,7 +107,7 @@ export default function Legal({ type = "terms" }) {
 
               <div className="mt-12 pt-8 border-t border-midnight/10 text-sm text-midnight/55 space-y-1">
                 <p>{placeholders.company}</p>
-                <p>{placeholders.nip} · {placeholders.regon}</p>
+                <p>NIP {placeholders.nip}</p>
                 <p>{placeholders.address}</p>
                 <p>{placeholders.email}</p>
               </div>

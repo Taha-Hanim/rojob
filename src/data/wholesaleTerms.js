@@ -143,7 +143,7 @@ Headings are for convenience only. These Terms are drafted in English; a Polish 
     title: "18. Acknowledgement",
     body: `BY USING THIS PAGE OR APPLYING FOR WHOLESALE ACCESS, YOU ACKNOWLEDGE THAT YOU HAVE READ THESE TERMS, UNDERSTAND THEM, AND AGREE TO BE BOUND BY THEM. IF YOU DO NOT AGREE, DO NOT APPLY AND DO NOT ORDER.
 
-Effective date: 11 September 2026. Seller: [LEGAL COMPANY NAME], [REGISTERED ADDRESS], NIP [NIP], contact [CONTACT EMAIL].`,
+Effective date: 28 September 2026. Seller: [LEGAL COMPANY NAME], [REGISTERED ADDRESS], NIP [NIP], contact [CONTACT EMAIL].`,
   },
 ];
 
@@ -286,6 +286,6 @@ Wersja angielska ma pierwszeństwo w razie rozbieżności, chyba że prawo lokal
     title: "18. Potwierdzenie",
     body: `KORZYSTAJĄC Z TEJ STRONY LUB SKŁADAJĄC WNIOSEK HURTOWY, POTWIERDZAJĄ PAŃSTWO ZAPOZNANIE SIĘ Z WARUNKAMI I ICH AKCEPTACJĘ. W RAZIE BRAKU ZGODY — NIE SKŁADAJĄ PAŃSTWO WNIOSKU ANI ZAMÓWIENIA.
 
-Data wejścia w życie: 11 września 2026. Sprzedawca: [NAZWA PRAWNA FIRMY], [ADRES REJESTROWY], NIP [NIP], kontakt [ADRES E-MAIL KONTAKTOWY].`,
+Data wejścia w życie: 28 września 2026. Sprzedawca: [NAZWA PRAWNA FIRMY], [ADRES REJESTROWY], NIP [NIP], kontakt [ADRES E-MAIL KONTAKTOWY].`,
   },
 ];
